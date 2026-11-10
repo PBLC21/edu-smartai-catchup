@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grade 8 Catch-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: a working notebook — skill map in the margin, one problem on graph paper in the main column */
+:root{
+  --bg:#eef3f4; --surface:#ffffff; --ink:#132228; --muted:#566870; --line:#d3dee1; --grid:#e4ecee;
+  --accent:#0a6a70; --accent-soft:#dcefef; --on-accent:#ffffff;
+  --marker:#f0b429; --marker-soft:#fdf1cf;
+  --good:#2b7d47; --good-soft:#dff0e4; --bad:#b63c28; --bad-soft:#f8e1dc;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018;
+  --good:#6fcf8f; --good-soft:#173a25; --bad:#ff8f7a; --bad-soft:#40211b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018;
+  --good:#6fcf8f; --good-soft:#173a25; --bad:#ff8f7a; --bad-soft:#40211b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1140px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px}
+.brand h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,40px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.brand h1 span{background:linear-gradient(transparent 58%,var(--marker) 58%, var(--marker) 90%,transparent 90%);padding:0 2px}
+.brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.home{display:inline-block;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--accent);text-decoration:none}
+.home:hover{text-decoration:underline}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:700;font-size:14px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:none}
+.btn.warn{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+
+.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)} .map{order:2}}
+
+/* Skill map */
+.map{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.map h2{font-family:var(--display);font-size:18px;margin:0}
+.map .note{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.cat{display:flex;flex-direction:column;gap:4px}
+.cat-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;padding-bottom:2px;border-bottom:1px solid var(--line)}
+.cat-h b{color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sk{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:0;background:none;padding:7px 6px;border-radius:8px;width:100%}
+.sk:hover{background:var(--grid)}
+.sk[aria-current="true"]{background:var(--accent-soft)}
+.code{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.sk .nm{font-size:14px;line-height:1.25}
+.sk .nx{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;background:var(--marker);color:#2a2005;border-radius:4px;padding:0 5px;vertical-align:1px}
+.pill{font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.st-new{color:var(--muted);border:1px solid var(--line)}
+.st-working{background:var(--accent-soft);color:var(--accent)}
+.st-gap{background:var(--bad-soft);color:var(--bad)}
+.st-ok{background:var(--marker-soft);color:var(--ink)}
+.st-mastered{background:var(--good-soft);color:var(--good)}
+
+/* Main */
+.main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.banner{background:var(--marker-soft);border:1px solid var(--marker);border-radius:14px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between}
+.banner h3{margin:0;font-family:var(--display);font-size:18px}
+.banner p{margin:2px 0 0;font-size:14px;max-width:56ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;padding:14px 20px;border-bottom:1px solid var(--line);align-items:center}
+.eyebrow{font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.eyebrow .code{font-size:13px;margin-right:6px}
+.pips{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.pip{width:12px;height:12px;border-radius:50%;border:2px solid var(--accent)}
+.pip.on{background:var(--accent)}
+.paper{padding:22px 20px 24px;display:flex;flex-direction:column;gap:18px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+.qtext{font-size:clamp(17px,2.2vw,20px);line-height:1.5;max-width:62ch;margin:0;background:var(--surface);box-shadow:0 0 0 6px var(--surface)}
+.expr{font-family:var(--mono);font-size:clamp(18px,2.6vw,24px);background:var(--surface);display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:8px;overflow-x:auto;max-width:100%}
+.vis{overflow-x:auto;max-width:100%}
+.plot{width:300px;max-width:100%;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:block}
+.plot .gl{stroke:var(--grid);stroke-width:1}
+.plot .ax{stroke:var(--muted);stroke-width:1.5}
+.plot .lab{fill:var(--muted);font:11px var(--body)}
+.plot .tl{fill:var(--muted);font:700 11px var(--body)}
+.plot .ln{stroke:var(--accent);stroke-width:2.5;fill:none}
+.plot .pt{fill:var(--marker);stroke:var(--ink);stroke-width:1.5}
+.plot .dot{fill:var(--accent);opacity:.75}
+.plot .pl{fill:var(--ink);font:700 12px var(--mono)}
+table.tb{border-collapse:collapse;background:var(--surface);font-family:var(--mono);font-variant-numeric:tabular-nums}
+table.tb th,table.tb td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.tb th{background:var(--accent-soft);color:var(--accent)}
+.answer{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.answer input{font:500 20px var(--mono);width:min(220px,100%);padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.answer input:focus{border-color:var(--accent);outline:none}
+.help{font-size:13px;color:var(--muted);margin:-8px 0 0}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.choice{text-align:left;padding:12px 14px;border:2px solid var(--line);background:var(--surface);border-radius:10px;font-family:var(--mono);font-size:16px;min-width:0;overflow-wrap:anywhere}
+.choice.txt{font-family:var(--body)}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+.choice.right{border-color:var(--good);background:var(--good-soft)}
+.choice.wrongpick{border-color:var(--bad);background:var(--bad-soft)}
+.choice:disabled{cursor:default}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.hintbox{background:var(--marker-soft);border-left:4px solid var(--marker);padding:10px 14px;border-radius:0 8px 8px 0;font-size:15px;max-width:62ch}
+.fb{border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--good-soft)} .fb.no{background:var(--bad-soft)}
+.fb strong{font-family:var(--display);font-size:18px}
+.fb.ok strong{color:var(--good)} .fb.no strong{color:var(--bad)}
+.fb .ansv{font-family:var(--mono)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15px}
+.steps li{padding-left:2px}
+.steps .m{font-family:var(--mono)}
+details summary{cursor:pointer;font-weight:700;font-size:14px}
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.sum h3{margin:0;font-family:var(--display);font-size:22px}
+.sum p{margin:0;max-width:60ch}
+.gaplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.gaplist li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.gaplist .w{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.ttl h2{font-family:var(--display);font-size:clamp(20px,2.6vw,26px);margin:2px 0 0;line-height:1.15}
+.tabs{display:flex;gap:4px;padding:8px 12px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:10px 12px;font-weight:700;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tabs button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .tn{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:12px;border:2px solid currentColor}
+.tabs button[aria-current="true"] .tn{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lesson{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:16px;align-items:start}
+@media (max-width:760px){.lesson{grid-template-columns:minmax(0,1fr)}}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.idea p{margin:0;font-size:17px;max-width:62ch}
+.formula{font-family:var(--mono);font-size:16px;background:var(--accent-soft);color:var(--ink);border-radius:8px;padding:8px 12px;overflow-x:auto;white-space:pre}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.side h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.words,.watch{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.watch{border-color:var(--marker);background:var(--marker-soft)}
+.watch p{margin:0;font-size:15px}
+.words dl{margin:0;display:flex;flex-direction:column;gap:6px}
+.words dt{font-weight:700;font-size:15px}
+.words dd{margin:0;font-size:13px;color:var(--muted);font-style:italic}
+.example{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.example h3{margin:0;font-family:var(--display);font-size:18px}
+.example .qtext{box-shadow:none}
+.exans{margin:0;font-size:16px}
+.m{font-family:var(--mono)}
+.gsteps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.gs{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.gs p{margin:0}
+.gs.now{border:2px solid var(--accent)}
+.gs .gbody{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gp{font-size:17px;max-width:62ch}
+.gn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--accent);color:var(--on-accent)}
+.gn.ok{background:var(--good);color:var(--surface)}
+.gn.help{background:var(--marker);color:#2a2005}
+.gs.done p{color:var(--muted);font-size:14px}
+.gs.done .ga{color:var(--ink);font-size:16px;font-weight:500}
+.foot{font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.fb,.hintbox{animation:rise .18s ease-out}@keyframes rise{from{transform:translateY(4px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <a class="home" href="../../" id="home-link">← All grades</a>
+      <h1>Grade 8 <span>Catch-Up</span></h1>
+      <p id="sub"></p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" data-lang="en">EN</button>
+        <button id="lang-es" data-lang="es">ES</button>
+      </div>
+      <button class="btn" id="btn-check"></button>
+      <button class="btn ghost" id="btn-reset"></button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="map" id="map"></aside>
+    <main class="main" id="main"></main>
+  </div>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const LS='catchup.math.grade-8.v1';
+let S=null; try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}
+if(!S||typeof S!=='object'||!S.p)S={lang:'en',p:{}};
+try{const gl=localStorage.getItem('catchup.lang');if(gl==='en'||gl==='es')S.lang=gl}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+const L=(en,es)=>({en,es});
+const tx=v=>v==null?'':(typeof v==='object'?v[S.lang]:String(v));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- helpers ---------- */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const nz=(a,b)=>{let v;do v=ri(a,b);while(v===0);return v};
+const r2=n=>Math.round(n*100)/100;
+const fm=n=>String(r2(n)).replace('-','−');
+const f2=n=>n.toFixed(2).replace('-','−');
+const money=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pt=(x,y)=>`(${fm(x)}, ${fm(y)})`;
+function lin(m,b){let s=m===0?'':m===1?'x':m===-1?'−x':fm(m)+'x';
+  if(b!==0){s=s?s+(b<0?' − ':' + ')+fm(Math.abs(b)):fm(b)}else if(!s)s='0';return s}
+function mc(correct,others,n=4){const key=v=>JSON.stringify(v);const seen=new Set([key(correct)]);const list=[correct];
+  for(const o of others){if(list.length>=n)break;const k=key(o);if(!seen.has(k)){seen.add(k);list.push(o)}}
+  const sh=shuf(list);return{choices:sh,ans:sh.indexOf(correct)}}
+function parseNum(s){s=String(s).trim().replace(/[−–]/g,'-').replace(/[$,\s]/g,'').replace(/^[a-z]=/i,'');
+  let m=s.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);if(m)return +m[1]/+m[2];
+  return /^-?\d*\.?\d+$/.test(s)?parseFloat(s):NaN}
+/* one guided step: numeric answer, or multiple choice when o.choices is given (ans = index) */
+const S1=(p,ans,h,o={})=>({p,ans,h,type:o.choices?'mc':'num',choices:o.choices,tol:o.tol??.001,at:o.at??(o.choices?o.choices[ans]:fm(ans)),mono:o.mono});
+const AND=(a,b)=>L(`${a} and ${b}`,`${a} y ${b}`);
+function nice(r){const p=Math.pow(10,Math.floor(Math.log10(r)));const f=r/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p}
+
+/* ---------- coordinate plot (inline SVG) ---------- */
+let clipN=0;
+function plot(o){
+  const W=300,H=260,PL=38,PB=30,PT=12,PR=14;const[x0,x1]=o.xr,[y0,y1]=o.yr;
+  const sx=x=>PL+(x-x0)/(x1-x0)*(W-PL-PR), sy=y=>H-PB-(y-y0)/(y1-y0)*(H-PB-PT);
+  const xs=o.xs||nice((x1-x0)/8), ys=o.ys||nice((y1-y0)/6), xl=o.xl||xs, yl=o.yl||ys;
+  const ax=(y0<=0&&y1>=0)?sy(0):sy(y0), ay=(x0<=0&&x1>=0)?sx(0):sx(x0);
+  let g='',t='';
+  for(let i=Math.ceil(x0/xs-1e-9);i*xs<=x1+1e-9;i++){const x=r2(i*xs);g+=`<line class="gl" x1="${sx(x)}" y1="${sy(y0)}" x2="${sx(x)}" y2="${sy(y1)}"/>`;
+    if(Math.abs(x/xl-Math.round(x/xl))<1e-6&&!(x===0&&ay!==sx(x0)))t+=`<text class="lab" x="${sx(x)}" y="${ax+15}" text-anchor="middle">${fm(x)}</text>`}
+  for(let i=Math.ceil(y0/ys-1e-9);i*ys<=y1+1e-9;i++){const y=r2(i*ys);g+=`<line class="gl" x1="${sx(x0)}" y1="${sy(y)}" x2="${sx(x1)}" y2="${sy(y)}"/>`;
+    if(Math.abs(y/yl-Math.round(y/yl))<1e-6&&!(y===0&&ax!==sy(y0)))t+=`<text class="lab" x="${ay-5}" y="${sy(y)+4}" text-anchor="end">${fm(y)}</text>`}
+  if(ay!==sx(x0)&&ax!==sy(y0))t+=`<text class="lab" x="${ay-5}" y="${ax+14}" text-anchor="end">0</text>`;
+  const id='c'+(clipN++);
+  let ln=(o.lines||[]).map(l=>`<line class="ln" clip-path="url(#${id})" x1="${sx(x0)}" y1="${sy(l.m*x0+l.b)}" x2="${sx(x1)}" y2="${sy(l.m*x1+l.b)}"/>`).join('');
+  let dots=(o.dots||[]).map(([x,y])=>`<circle class="dot" cx="${sx(x)}" cy="${sy(y)}" r="4"/>`).join('');
+  let pts=(o.pts||[]).map(p=>`<circle class="pt" cx="${sx(p.x)}" cy="${sy(p.y)}" r="5"/>`+(p.l?`<text class="pl" x="${sx(p.x)+8}" y="${sy(p.y)-8}">${esc(p.l)}</text>`:'')).join('');
+  const axes=`<line class="ax" x1="${sx(x0)}" y1="${ax}" x2="${sx(x1)}" y2="${ax}"/><line class="ax" x1="${ay}" y1="${sy(y0)}" x2="${ay}" y2="${sy(y1)}"/>`;
+  const titles=(o.xt?`<text class="tl" x="${W-PR}" y="${H-4}" text-anchor="end">${esc(o.xt)}</text>`:'')+(o.yt?`<text class="tl" x="${PL+4}" y="${PT+10}">${esc(o.yt)}</text>`:'');
+  return `<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||'graph')}"><defs><clipPath id="${id}"><rect x="${sx(x0)}" y="${sy(y1)}" width="${sx(x1)-sx(x0)}" height="${sy(y0)-sy(y1)}"/></clipPath></defs>${g}${axes}${ln}${dots}${pts}${t}${titles}</svg>`;
+}
+
+/* ---------- problem generators, one per readiness standard ---------- */
+const G={};
+G['8.2D']=()=>{let it,ok;do{it=[];
+    const n=pick([2,3,5,6,7,8,10,11,12,13,14,15,17,18,19,20,21,22,23,24,26,27,28,29,30,35,40,45,50,55,60,70,80]);it.push({l:'√'+n,v:Math.sqrt(n)});
+    const q=pick([3,4,6,8,9]);let p=ri(q+1,q*5);if(p%q===0)p++;it.push({l:p+'/'+q,v:p/q});
+    const d=ri(12,59)/10;it.push({l:String(d),v:d});
+    if(Math.random()<.5)it.push({l:'π',v:Math.PI});else{const nd=ri(5,30)/10;it.push({l:'−'+nd,v:-nd})}
+    const sv=it.map(i=>i.v).sort((a,b)=>a-b);ok=sv.every((v,i)=>i===0||v-sv[i-1]>0.08)}while(!ok);
+  const big=Math.random()<.5;const sorted=it.slice().sort((a,b)=>a.v-b.v);const target=big?sorted[3]:sorted[0];
+  const m=mc(target.l,it.map(i=>i.l));
+  return{type:'mc',mono:true,text:big?L('Which number is the greatest?','¿Cuál número es el mayor?'):L('Which number is the least?','¿Cuál número es el menor?'),
+    choices:m.choices,ans:m.ans,ansText:target.l,
+    hint:L('Change every number to a decimal. For a square root, find the perfect squares on each side (√20 is between √16 = 4 and √25 = 5).','Convierte cada número a decimal. Para una raíz cuadrada, busca los cuadrados perfectos a cada lado (√20 está entre √16 = 4 y √25 = 5).'),
+    g:(()=>{const sq=it.find(i=>i.l[0]==='√'),fr=it.find(i=>i.l.includes('/'));const n=+sq.l.slice(1),lo=Math.floor(Math.sqrt(n));const[fp,fq]=fr.l.split('/');
+      const bc=mc(AND(lo,lo+1),[AND(Math.max(0,lo-1),Math.max(1,lo)),AND(lo+1,lo+2),AND(Math.floor(n/2),Math.floor(n/2)+1)]);
+      return[S1(L(`${sq.l} is between which two whole numbers?`,`¿Entre cuáles dos números enteros está ${sq.l}?`),bc.ans,L(`Find perfect squares near ${n}: ${lo}² = ${lo*lo} and ${lo+1}² = ${(lo+1)**2}.`,`Busca cuadrados perfectos cerca de ${n}: ${lo}² = ${lo*lo} y ${lo+1}² = ${(lo+1)**2}.`),{choices:bc.choices}),
+        S1(L(`Write ${fr.l} as a decimal (round to the hundredths).`,`Escribe ${fr.l} como decimal (redondea a centésimas).`),r2(fr.v),L(`Divide ${fp} ÷ ${fq}.`,`Divide ${fp} ÷ ${fq}.`),{tol:.011}),
+        S1(L(`π ≈ 3.14, and the other numbers are already decimals. Now compare. ${big?'Which is the greatest?':'Which is the least?'}`,`π ≈ 3.14 y los demás ya son decimales. Ahora compara. ${big?'¿Cuál es el mayor?':'¿Cuál es el menor?'}`),m.ans,L('Negative numbers are always the least. Then compare the whole-number parts.','Los negativos siempre son los menores. Luego compara la parte entera.'),{choices:m.choices,mono:true})]})(),
+    steps:[L('Approximate each value as a decimal:','Aproxima cada valor como decimal:'),...sorted.map(i=>({m:`${i.l} ≈ ${f2(i.v)}`})),
+      L(`Least to greatest: ${sorted.map(i=>i.l).join(', ')}`,`De menor a mayor: ${sorted.map(i=>i.l).join(', ')}`)]}};
+
+G['8.4B']=()=>{const c=pick([
+    {k:pick([1.5,2,2.5,3]),xt:L('pounds','libras'),yt:L('cost ($)','costo ($)'),s:L('pounds of apples (x) and total cost in dollars (y)','libras de manzanas (x) y el costo total en dólares (y)'),u:L('dollars per pound','dólares por libra')},
+    {k:pick([45,50,55,60,65]),xt:L('hours','horas'),yt:L('miles','millas'),s:L('hours driven (x) and miles traveled (y)','horas manejadas (x) y millas recorridas (y)'),u:L('miles per hour','millas por hora')},
+    {k:pick([12,15,20,25]),xt:L('days','días'),yt:L('pages','páginas'),s:L('days (x) and total pages read (y)','días (x) y el total de páginas leídas (y)'),u:L('pages per day','páginas por día')}]);
+  const x=ri(2,5),y=c.k*x,xm=x+2,ym=c.k*xm;
+  return{type:'num',text:L(`The graph shows a proportional relationship between ${c.s.en}. The line passes through (0, 0) and ${pt(x,y)}. What is the unit rate, which is the slope of the line?`,`La gráfica muestra una relación proporcional entre ${c.s.es}. La recta pasa por (0, 0) y ${pt(x,y)}. ¿Cuál es la tasa unitaria, es decir, la pendiente de la recta?`),
+    disp:()=>plot({xr:[0,xm],yr:[0,ym],xs:1,ys:nice(ym/6),lines:[{m:c.k,b:0}],pts:[{x,y,l:pt(x,y)}],xt:tx(c.xt),yt:tx(c.yt),aria:'line through origin'}),
+    ans:c.k,ansText:fm(c.k)+' '+tx(c.u),tol:.001,
+    hint:L('In a proportional relationship, slope = y ÷ x for any point on the line (except the origin).','En una relación proporcional, la pendiente = y ÷ x para cualquier punto de la recta (excepto el origen).'),
+    g:[S1(L(`Going from (0, 0) to ${pt(x,y)}, how much does y change?`,`Al ir de (0, 0) a ${pt(x,y)}, ¿cuánto cambia y?`),y,L(`y goes from 0 up to ${fm(y)}.`,`y va de 0 hasta ${fm(y)}.`)),
+      S1(L('How much does x change?','¿Cuánto cambia x?'),x,L(`x goes from 0 to ${x}.`,`x va de 0 a ${x}.`)),
+      S1(L('Unit rate = change in y ÷ change in x. What is it?','Tasa unitaria = cambio en y ÷ cambio en x. ¿Cuánto es?'),c.k,L(`Divide ${fm(y)} ÷ ${x}.`,`Divide ${fm(y)} ÷ ${x}.`))],
+    steps:[L('Unit rate = change in y ÷ change in x','Tasa unitaria = cambio en y ÷ cambio en x'),{m:`(${fm(y)} − 0) ÷ (${x} − 0) = ${fm(c.k)}`},L(`So the slope is ${fm(c.k)} ${c.u.en}.`,`La pendiente es ${fm(c.k)} ${c.u.es}.`)]}};
+
+G['8.4C']=()=>{const m=nz(-5,6),b=ri(-8,9),s=ri(-3,1),st=pick([1,2,3]);const xs=[0,1,2,3].map(i=>s+i*st),ys=xs.map(x=>m*x+b);
+  const askB=Math.random()<.45;
+  const tb=`<table class="tb"><tr><th>x</th>${xs.map(v=>`<td>${fm(v)}</td>`).join('')}</tr><tr><th>y</th>${ys.map(v=>`<td>${fm(v)}</td>`).join('')}</tr></table>`;
+  const sl=[L('Pick two rows and find the slope:','Elige dos filas y calcula la pendiente:'),{m:`m = (${fm(ys[1])} − ${fm(ys[0])}) ÷ (${fm(xs[1])} − ${fm(xs[0])}) = ${fm(m*st)} ÷ ${st} = ${fm(m)}`}];
+  if(askB)sl.push(L('Substitute one point into y = mx + b and solve for b:','Sustituye un punto en y = mx + b y despeja b:'),{m:`${fm(ys[0])} = ${fm(m)}(${fm(xs[0])}) + b  →  b = ${fm(b)}`});
+  return{type:'num',text:askB?L('The table shows a linear relationship. What is the y-intercept?','La tabla muestra una relación lineal. ¿Cuál es la intersección con el eje y?'):L('The table shows a linear relationship. What is the rate of change (slope)?','La tabla muestra una relación lineal. ¿Cuál es la tasa de cambio (pendiente)?'),
+    disp:()=>tb,ans:askB?b:m,ansText:fm(askB?b:m),
+    g:[S1(L('Look at the first two columns. How much does y change?','Mira las dos primeras columnas. ¿Cuánto cambia y?'),m*st,L(`Subtract: ${fm(ys[1])} − (${fm(ys[0])}). A decrease is negative.`,`Resta: ${fm(ys[1])} − (${fm(ys[0])}). Si disminuye, es negativo.`)),
+      S1(L('How much does x change between those same columns?','¿Cuánto cambia x entre esas mismas columnas?'),st,L(`Subtract: ${fm(xs[1])} − (${fm(xs[0])}).`,`Resta: ${fm(xs[1])} − (${fm(xs[0])}).`)),
+      S1(L('Slope m = change in y ÷ change in x. What is m?','Pendiente m = cambio en y ÷ cambio en x. ¿Cuánto es m?'),m,L(`Divide ${fm(m*st)} ÷ ${st}.`,`Divide ${fm(m*st)} ÷ ${st}.`)),
+      ...(askB?[S1(L(`Use the point ${pt(xs[0],ys[0])} and b = y − m·x. What is b?`,`Usa el punto ${pt(xs[0],ys[0])} y b = y − m·x. ¿Cuánto es b?`),b,L(`${fm(ys[0])} − (${fm(m)})(${fm(xs[0])})`,`${fm(ys[0])} − (${fm(m)})(${fm(xs[0])})`))]:[])],
+    hint:askB?L('Find the slope first. Then work backward to x = 0: the y-value there is the y-intercept.','Primero calcula la pendiente. Luego regresa hasta x = 0: el valor de y ahí es la intersección con el eje y.'):L('Slope = change in y ÷ change in x. Check how much x goes up between rows.','Pendiente = cambio en y ÷ cambio en x. Fíjate cuánto aumenta x entre filas.'),
+    steps:sl}};
+
+G['8.5G']=()=>{const isF=Math.random()<.5;let xs;do{xs=[ri(-5,6),ri(-5,6),ri(-5,6),ri(-5,6)]}while(new Set(xs).size<4);
+  const ys=xs.map(()=>ri(-6,8));let dup=null;
+  if(!isF){xs[3]=xs[1];if(ys[3]===ys[1])ys[3]=ys[1]+ri(1,4);dup=xs[1]}
+  const order=shuf([0,1,2,3]);const set='{'+order.map(i=>pt(xs[i],ys[i])).join(', ')+'}';
+  const yes=L('Yes, it is a function','Sí, es una función'),no=L('No, it is not a function','No, no es una función');
+  return{type:'mc',text:L('Is this relation a function?','¿Esta relación es una función?'),disp:()=>`<span class="expr">${set}</span>`,
+    choices:[yes,no],ans:isF?0:1,ansText:tx(isF?yes:no),
+    g:[S1(L(`Look only at the x-values: ${order.map(i=>fm(xs[i])).join(', ')}. Does any x-value appear more than once?`,`Mira solo los valores de x: ${order.map(i=>fm(xs[i])).join(', ')}. ¿Algún valor de x aparece más de una vez?`),isF?1:0,L('Read the first number of each pair, one at a time.','Lee el primer número de cada par, uno por uno.'),{choices:[L('Yes','Sí'),L('No','No')]}),
+      S1(isF?L('Every input has only one output. Is it a function?','Cada entrada tiene una sola salida. ¿Es una función?'):L(`x = ${fm(dup)} goes to two different y-values. Is it a function?`,`x = ${fm(dup)} va a dos valores de y diferentes. ¿Es una función?`),isF?0:1,L('A function gives exactly one output for each input.','Una función da exactamente una salida para cada entrada.'),{choices:[yes,no]})],
+    hint:L('Look only at the x-values. Does any x-value repeat with a different y-value?','Mira solo los valores de x. ¿Algún valor de x se repite con un valor de y diferente?'),
+    steps:[L('A relation is a function when each input (x) has exactly one output (y).','Una relación es una función cuando cada entrada (x) tiene exactamente una salida (y).'),
+      isF?L('Every x-value appears only once, so it is a function.','Cada valor de x aparece solo una vez, así que sí es una función.')
+        :L(`x = ${fm(dup)} goes to both y = ${fm(ys[1])} and y = ${fm(ys[3])}, so it is not a function.`,`x = ${fm(dup)} va a y = ${fm(ys[1])} y también a y = ${fm(ys[3])}, así que no es una función.`)]}};
+
+G['8.5I']=()=>{const c=pick(['gym','taxi','pool']);let m,b,t;
+  if(c==='gym'){b=ri(4,15)*5;m=ri(15,45);t=L(`A gym charges a $${b} sign-up fee plus $${m} per month. Which equation gives the total cost y after x months?`,`Un gimnasio cobra $${b} de inscripción más $${m} por mes. ¿Qué ecuación da el costo total y después de x meses?`)}
+  else if(c==='taxi'){b=pick([2.5,3,3.5,4]);m=pick([1.5,2,2.25,2.5]);t=L(`A taxi charges $${fm(b)} to start the ride plus $${fm(m)} per mile. Which equation gives the fare y for a ride of x miles?`,`Un taxi cobra $${fm(b)} al iniciar el viaje más $${fm(m)} por milla. ¿Qué ecuación da la tarifa y para un viaje de x millas?`)}
+  else{b=ri(40,90)*10;m=-ri(15,40);t=L(`A pool holds ${b} gallons and drains at ${-m} gallons per minute. Which equation gives the gallons left y after x minutes?`,`Una piscina tiene ${b} galones y se vacía a ${-m} galones por minuto. ¿Qué ecuación da los galones que quedan y después de x minutos?`)}
+  const r=mc(`y = ${lin(m,b)}`,[`y = ${lin(b,m)}`,`y = ${lin(m,-b)}`,`y = ${lin(r2(m+b),0)}`,`y = ${lin(-m,b)}`]);
+  const u=c==='gym'?L('month','mes'):c==='taxi'?L('mile','milla'):L('minute','minuto');
+  return{type:'mc',mono:true,text:t,choices:r.choices,ans:r.ans,ansText:`y = ${lin(m,b)}`,
+    g:[S1(L(`How much does the amount change for each ${u.en}? That is the slope m. (If it goes down, m is negative.)`,`¿Cuánto cambia la cantidad por cada ${u.es}? Esa es la pendiente m. (Si disminuye, m es negativa.)`),m,L(`Look for the word "per" in the problem.${m<0?' The water goes down, so use a negative number.':''}`,`Busca la palabra "por" en el problema.${m<0?' El agua disminuye, así que usa un número negativo.':''}`)),
+      S1(L('What is the amount at the start, when x = 0? That is b.','¿Cuál es la cantidad al inicio, cuando x = 0? Esa es b.'),b,L('It is the fee or amount you have before anything changes.','Es la cuota o cantidad que hay antes de que algo cambie.')),
+      S1(L('Put them into y = mx + b. Which equation is it?','Colócalos en y = mx + b. ¿Cuál es la ecuación?'),r.ans,L(`m = ${fm(m)} goes next to x; b = ${fm(b)} is added on its own.`,`m = ${fm(m)} va junto a la x; b = ${fm(b)} se suma sola.`),{choices:r.choices,mono:true})],
+    hint:L('The amount that changes each time x goes up by 1 is m. The starting amount (when x = 0) is b.','La cantidad que cambia cada vez que x aumenta en 1 es m. La cantidad inicial (cuando x = 0) es b.'),
+    steps:[L(`Rate of change: m = ${fm(m)}${m<0?' (it goes down, so it is negative)':''}`,`Tasa de cambio: m = ${fm(m)}${m<0?' (disminuye, así que es negativa)':''}`),L(`Starting amount: b = ${fm(b)}`,`Cantidad inicial: b = ${fm(b)}`),{m:`y = ${lin(m,b)}`}]}};
+
+G['8.8C']=()=>{let a,c,x,b;if(Math.random()<.3){a=ri(2,7)+.5;c=ri(-3,1);x=2*ri(-3,4)}else{a=nz(-6,9);do c=nz(-6,9);while(c===a);x=ri(-6,9)}
+  b=ri(-12,12);const d=r2(a*x+b-c*x),k=r2(a-c);
+  const mv=c>0?L(`Subtract ${fm(c)}x from both sides:`,`Resta ${fm(c)}x en ambos lados:`):L(`Add ${fm(-c)}x to both sides:`,`Suma ${fm(-c)}x en ambos lados:`);
+  const st=[mv,{m:`${lin(k,b)} = ${fm(d)}`}];
+  if(b!==0)st.push(b>0?L(`Subtract ${fm(b)} from both sides:`,`Resta ${fm(b)} en ambos lados:`):L(`Add ${fm(-b)} to both sides:`,`Suma ${fm(-b)} en ambos lados:`),{m:`${lin(k,0)} = ${fm(r2(d-b))}`});
+  st.push(L(`Divide both sides by ${fm(k)}:`,`Divide ambos lados entre ${fm(k)}:`),{m:`x = ${fm(x)}`});
+  return{type:'num',text:L('Solve for x.','Resuelve para x.'),disp:()=>`<span class="expr">${lin(a,b)} = ${lin(c,d)}</span>`,ans:x,ansText:'x = '+fm(x),
+    g:[S1(L(`Get the x-terms together on the left: ${c>0?'subtract':'add'} ${fm(Math.abs(c))}x on both sides. What is the coefficient of x now?`,`Junta los términos con x a la izquierda: ${c>0?'resta':'suma'} ${fm(Math.abs(c))}x en ambos lados. ¿Cuál es ahora el coeficiente de x?`),k,L(`${fm(a)} − (${fm(c)}) = ?`,`${fm(a)} − (${fm(c)}) = ?`)),
+      S1(L(`Now you have ${lin(k,b)} = ${fm(d)}. Move the ${fm(b)} to the right side. What number is on the right?`,`Ahora tienes ${lin(k,b)} = ${fm(d)}. Pasa el ${fm(b)} al lado derecho. ¿Qué número queda a la derecha?`),r2(d-b),L(`Do the opposite operation: ${fm(d)} − (${fm(b)}) = ?`,`Haz la operación contraria: ${fm(d)} − (${fm(b)}) = ?`)),
+      S1(L(`${lin(k,0)} = ${fm(r2(d-b))}. Divide both sides by ${fm(k)}. What is x?`,`${lin(k,0)} = ${fm(r2(d-b))}. Divide ambos lados entre ${fm(k)}. ¿Cuánto vale x?`),x,L(`${fm(r2(d-b))} ÷ ${fm(k)} = ? Watch the sign.`,`${fm(r2(d-b))} ÷ ${fm(k)} = ? Cuidado con el signo.`))],
+    hint:L('Get all the x-terms on one side first, then the numbers on the other side.','Primero pasa todos los términos con x a un lado y los números al otro lado.'),steps:st}};
+
+G['8.3C']=()=>{const k=pick([2,3,.5,1.5]);let x,y;do{if(k%1){x=2*nz(-4,4);y=2*nz(-4,4)}else{x=nz(-5,5);y=nz(-5,5)}}while(x===y);
+  const kl=k===.5?'1/2':k===1.5?'3/2':String(k);
+  const r=mc(pt(k*x,k*y),[pt(x+k,y+k),pt(k*x,y),pt(x/k,y/k),pt(k*y,k*x),pt(x*k+1,y*k)]);
+  return{type:'mc',mono:true,text:L(`Triangle ABC is dilated by a scale factor of ${kl} with the center of dilation at the origin. Vertex A is at ${pt(x,y)}. What are the coordinates of A′?`,`El triángulo ABC se dilata con un factor de escala de ${kl} con el centro de dilatación en el origen. El vértice A está en ${pt(x,y)}. ¿Cuáles son las coordenadas de A′?`),
+    choices:r.choices,ans:r.ans,ansText:pt(k*x,k*y),
+    g:[S1(L(`Multiply the x-coordinate by the scale factor: ${kl} · ${fm(x)} = ?`,`Multiplica la coordenada x por el factor de escala: ${kl} · ${fm(x)} = ?`),k*x,L(`Multiplying by ${kl} means ${k===.5?'taking half':k===1.5?'one and a half times':k+' times'}.`,`Multiplicar por ${kl} significa ${k===.5?'sacar la mitad':k===1.5?'una vez y media':k+' veces'}.`)),
+      S1(L(`Do the same to the y-coordinate: ${kl} · ${fm(y)} = ?`,`Haz lo mismo con la coordenada y: ${kl} · ${fm(y)} = ?`),k*y,L('Same scale factor, same operation. Keep the sign.','Mismo factor de escala, misma operación. Conserva el signo.')),
+      S1(L('Which point is A′?','¿Cuál es el punto A′?'),r.ans,L('Put the new x first, then the new y.','Escribe primero la nueva x y luego la nueva y.'),{choices:r.choices,mono:true})],
+    hint:L('A dilation centered at the origin multiplies both coordinates by the scale factor.','Una dilatación con centro en el origen multiplica ambas coordenadas por el factor de escala.'),
+    steps:[{m:`(x, y) → (${kl}x, ${kl}y)`},{m:`(${fm(x)}, ${fm(y)}) → (${kl}·${fm(x)}, ${kl}·${fm(y)}) = ${pt(k*x,k*y)}`},
+      k>1?L('The scale factor is greater than 1, so the image is larger.','El factor de escala es mayor que 1, así que la imagen es más grande.'):L('The scale factor is between 0 and 1, so the image is smaller.','El factor de escala está entre 0 y 1, así que la imagen es más pequeña.')]}};
+
+G['8.10C']=()=>{let a,b;do{a=nz(-7,7);b=nz(-7,7)}while(Math.abs(a)===Math.abs(b));const h=nz(-5,5),v=nz(-5,5);
+  const sg=n=>n<0?`− ${-n}`:`+ ${n}`;
+  const T=[{n:L('reflected over the x-axis','reflejado sobre el eje x'),f:[a,-b],r:'(x, y) → (x, −y)'},
+    {n:L('reflected over the y-axis','reflejado sobre el eje y'),f:[-a,b],r:'(x, y) → (−x, y)'},
+    {n:L('rotated 90° counterclockwise about the origin','rotado 90° en sentido contrario a las manecillas del reloj alrededor del origen'),f:[-b,a],r:'(x, y) → (−y, x)'},
+    {n:L('rotated 180° about the origin','rotado 180° alrededor del origen'),f:[-a,-b],r:'(x, y) → (−x, −y)'},
+    {n:L('rotated 270° counterclockwise about the origin','rotado 270° en sentido contrario a las manecillas del reloj alrededor del origen'),f:[b,-a],r:'(x, y) → (y, −x)'},
+    {n:L(`translated ${Math.abs(h)} unit${Math.abs(h)>1?'s':''} ${h>0?'right':'left'} and ${Math.abs(v)} unit${Math.abs(v)>1?'s':''} ${v>0?'up':'down'}`,`trasladado ${Math.abs(h)} unidad${Math.abs(h)>1?'es':''} a la ${h>0?'derecha':'izquierda'} y ${Math.abs(v)} unidad${Math.abs(v)>1?'es':''} hacia ${v>0?'arriba':'abajo'}`),f:[a+h,b+v],r:`(x, y) → (x ${sg(h)}, y ${sg(v)})`}];
+  const t=pick(T);const r=mc(pt(...t.f),shuf(T.filter(o=>o!==t)).map(o=>pt(...o.f)).concat([pt(b,a)]));
+  return{type:'mc',mono:true,text:L(`Point P ${pt(a,b)} is ${t.n.en}. What are the coordinates of P′?`,`El punto P ${pt(a,b)} es ${t.n.es}. ¿Cuáles son las coordenadas de P′?`),
+    disp:()=>plot({xr:[-10,10],yr:[-10,10],xs:1,ys:1,xl:5,yl:5,pts:[{x:a,y:b,l:'P'}],aria:'point P on a coordinate plane'}),
+    choices:r.choices,ans:r.ans,ansText:pt(...t.f),
+    g:(()=>{const H=[L('Reflecting over the x-axis flips the point up/down, so only y changes sign.','Reflejar sobre el eje x voltea el punto arriba/abajo, así que solo y cambia de signo.'),
+        L('Reflecting over the y-axis flips the point left/right, so only x changes sign.','Reflejar sobre el eje y voltea el punto izquierda/derecha, así que solo x cambia de signo.'),
+        L('A 90° counterclockwise turn: the coordinates switch places, and the new x takes the opposite sign.','Un giro de 90° en sentido contrario a las manecillas: las coordenadas cambian de lugar y la nueva x toma el signo contrario.'),
+        L('A 180° turn sends the point to the opposite side of the origin: both signs change.','Un giro de 180° manda el punto al lado opuesto del origen: cambian ambos signos.'),
+        L('A 270° counterclockwise turn: the coordinates switch places, and the new y takes the opposite sign.','Un giro de 270° en sentido contrario: las coordenadas cambian de lugar y la nueva y toma el signo contrario.'),
+        L('A translation adds to x (right +, left −) and adds to y (up +, down −).','Una traslación suma a x (derecha +, izquierda −) y suma a y (arriba +, abajo −).')][T.indexOf(t)];
+      const rr=mc(t.r,shuf(T.filter(o=>o!==t)).map(o=>o.r));
+      return[S1(L('Which rule matches this transformation?','¿Qué regla corresponde a esta transformación?'),rr.ans,H,{choices:rr.choices,mono:true}),
+        S1(L(`Rule: ${t.r}. Use P ${pt(a,b)}. What is the new x-coordinate?`,`Regla: ${t.r}. Usa P ${pt(a,b)}. ¿Cuál es la nueva coordenada x?`),t.f[0],L(`In P, x = ${fm(a)} and y = ${fm(b)}. Read the first part of the rule.`,`En P, x = ${fm(a)} y y = ${fm(b)}. Lee la primera parte de la regla.`)),
+        S1(L('What is the new y-coordinate?','¿Cuál es la nueva coordenada y?'),t.f[1],L('Read the second part of the rule.','Lee la segunda parte de la regla.'))]})(),
+    hint:L('Write the rule for this transformation as (x, y) → ( , ), then substitute.','Escribe la regla de esta transformación como (x, y) → ( , ) y luego sustituye.'),
+    steps:[L('Rule:','Regla:'),{m:t.r},L('Substitute P:','Sustituye P:'),{m:`${pt(a,b)} → ${pt(...t.f)}`}]}};
+
+G['8.7C']=()=>{const tr=pick([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,12,15],[12,16,20],[20,21,29],[9,40,41],[15,20,25]]);
+  const c=pick(['ladder','tv','ramp']);const askHyp=Math.random()<.5;const [p,q,h]=tr;let t;
+  if(c==='ladder')t=askHyp?L(`A ladder leans against a wall. Its base is ${p} ft from the wall and it reaches ${q} ft up the wall. How long is the ladder in feet?`,`Una escalera está recargada en una pared. Su base está a ${p} pies de la pared y llega a ${q} pies de altura. ¿Cuánto mide la escalera en pies?`)
+    :L(`A ${h}-ft ladder leans against a wall. Its base is ${p} ft from the wall. How high up the wall does it reach, in feet?`,`Una escalera de ${h} pies está recargada en una pared. Su base está a ${p} pies de la pared. ¿A qué altura de la pared llega, en pies?`);
+  else if(c==='tv')t=askHyp?L(`A TV screen is ${q} in. wide and ${p} in. tall. How long is its diagonal in inches?`,`La pantalla de un televisor mide ${q} pulg. de ancho y ${p} pulg. de alto. ¿Cuánto mide su diagonal en pulgadas?`)
+    :L(`A TV screen has a ${h}-in. diagonal and is ${q} in. wide. How tall is the screen in inches?`,`Una pantalla tiene una diagonal de ${h} pulg. y mide ${q} pulg. de ancho. ¿Cuánto mide de alto en pulgadas?`);
+  else t=askHyp?L(`A ramp rises ${p} ft over a horizontal distance of ${q} ft. How long is the ramp surface in feet?`,`Una rampa sube ${p} pies en una distancia horizontal de ${q} pies. ¿Cuánto mide la superficie de la rampa en pies?`)
+    :L(`A ${h}-ft ramp covers a horizontal distance of ${q} ft. How high does it rise, in feet?`,`Una rampa de ${h} pies cubre una distancia horizontal de ${q} pies. ¿Cuánto sube, en pies?`);
+  const leg=c==='ladder'?q:p, known=c==='ladder'?p:q;
+  const st=askHyp?[{m:'a² + b² = c²'},{m:`${p}² + ${q}² = c²  →  ${p*p} + ${q*q} = ${h*h}`},{m:`c = √${h*h} = ${h}`}]
+    :[{m:'a² + b² = c²'},{m:`${known}² + b² = ${h}²  →  b² = ${h*h} − ${known*known} = ${leg*leg}`},{m:`b = √${leg*leg} = ${leg}`}];
+  st.unshift(L('The two shorter sides are the legs; the longest side (across from the right angle) is the hypotenuse c.','Los dos lados cortos son los catetos; el lado más largo (frente al ángulo recto) es la hipotenusa c.'));
+  const g=askHyp?[S1(L(`Both legs are known. Square the first leg: ${p}² = ?`,`Conoces ambos catetos. Eleva el primero al cuadrado: ${p}² = ?`),p*p,L(`${p} × ${p}`,`${p} × ${p}`)),
+      S1(L(`Square the other leg: ${q}² = ?`,`Eleva el otro cateto al cuadrado: ${q}² = ?`),q*q,L(`${q} × ${q}`,`${q} × ${q}`)),
+      S1(L('Add them. a² + b² = c², so c² = ?','Súmalos. a² + b² = c², así que c² = ?'),h*h,L(`${p*p} + ${q*q}`,`${p*p} + ${q*q}`)),
+      S1(L(`c = √${h*h}. What is c?`,`c = √${h*h}. ¿Cuánto es c?`),h,L(`What number times itself is ${h*h}?`,`¿Qué número multiplicado por sí mismo da ${h*h}?`))]
+    :[S1(L(`The hypotenuse is ${h}. Square it: ${h}² = ?`,`La hipotenusa es ${h}. Elévala al cuadrado: ${h}² = ?`),h*h,L(`${h} × ${h}`,`${h} × ${h}`)),
+      S1(L(`Square the known leg: ${known}² = ?`,`Eleva el cateto conocido al cuadrado: ${known}² = ?`),known*known,L(`${known} × ${known}`,`${known} × ${known}`)),
+      S1(L('You are finding a leg, so subtract: b² = c² − a² = ?','Buscas un cateto, así que resta: b² = c² − a² = ?'),leg*leg,L(`${h*h} − ${known*known}`,`${h*h} − ${known*known}`)),
+      S1(L(`b = √${leg*leg}. What is b?`,`b = √${leg*leg}. ¿Cuánto es b?`),leg,L(`What number times itself is ${leg*leg}?`,`¿Qué número multiplicado por sí mismo da ${leg*leg}?`))];
+  return{type:'num',text:t,ans:askHyp?h:leg,ansText:String(askHyp?h:leg),g,hint:askHyp?L('You know both legs. Square them, add, then take the square root.','Conoces los dos catetos. Elévalos al cuadrado, súmalos y saca la raíz cuadrada.'):L('You know the hypotenuse. Subtract the squares, then take the square root.','Conoces la hipotenusa. Resta los cuadrados y luego saca la raíz cuadrada.'),steps:st}};
+
+G['8.7A']=()=>{const s=pick(['cyl','cone','sph']);const r=ri(2,9),h=ri(3,12);let v,t,st,dia=false;
+  if(s==='cyl'){v=3.14*r*r*h;t=L(`A cylinder has a radius of ${r} cm and a height of ${h} cm. What is its volume in cubic centimeters? Use π ≈ 3.14 and round to the nearest tenth.`,`Un cilindro tiene un radio de ${r} cm y una altura de ${h} cm. ¿Cuál es su volumen en centímetros cúbicos? Usa π ≈ 3.14 y redondea a la décima más cercana.`);
+    st=[{m:'V = πr²h'},{m:`V = 3.14 · ${r}² · ${h} = 3.14 · ${r*r} · ${h} ≈ ${v.toFixed(1)}`}]}
+  else if(s==='cone'){v=3.14*r*r*h/3;t=L(`A cone has a radius of ${r} in. and a height of ${h} in. What is its volume in cubic inches? Use π ≈ 3.14 and round to the nearest tenth.`,`Un cono tiene un radio de ${r} pulg. y una altura de ${h} pulg. ¿Cuál es su volumen en pulgadas cúbicas? Usa π ≈ 3.14 y redondea a la décima más cercana.`);
+    st=[{m:'V = (1/3)πr²h'},{m:`V = (1/3) · 3.14 · ${r*r} · ${h} ≈ ${v.toFixed(1)}`}]}
+  else{dia=Math.random()<.5;v=4/3*3.14*r*r*r;t=dia?L(`A ball has a diameter of ${2*r} cm. What is its volume in cubic centimeters? Use π ≈ 3.14 and round to the nearest tenth.`,`Una pelota tiene un diámetro de ${2*r} cm. ¿Cuál es su volumen en centímetros cúbicos? Usa π ≈ 3.14 y redondea a la décima más cercana.`)
+    :L(`A sphere has a radius of ${r} cm. What is its volume in cubic centimeters? Use π ≈ 3.14 and round to the nearest tenth.`,`Una esfera tiene un radio de ${r} cm. ¿Cuál es su volumen en centímetros cúbicos? Usa π ≈ 3.14 y redondea a la décima más cercana.`);
+    st=[...(dia?[L(`The radius is half the diameter: r = ${r}`,`El radio es la mitad del diámetro: r = ${r}`)]:[]),{m:'V = (4/3)πr³'},{m:`V = (4/3) · 3.14 · ${r**3} ≈ ${v.toFixed(1)}`}]}
+  const a=Math.round(v*10)/10;
+  const FS=['V = πr²h','V = (1/3)πr²h','V = (4/3)πr³','V = 2πrh'],fi=s==='cyl'?0:s==='cone'?1:2,fc=mc(FS[fi],FS.filter((_,i)=>i!==fi));
+  const g=[S1(L('Which volume formula fits this solid?','¿Qué fórmula de volumen corresponde a este sólido?'),fc.ans,L('Cylinder: πr²h. A cone is 1/3 of a cylinder. A sphere uses r³.','Cilindro: πr²h. Un cono es 1/3 de un cilindro. La esfera usa r³.'),{choices:fc.choices,mono:true}),
+    ...(dia?[S1(L(`The diameter is ${2*r}. What is the radius?`,`El diámetro es ${2*r}. ¿Cuánto es el radio?`),r,L('The radius is half the diameter.','El radio es la mitad del diámetro.'))]:[]),
+    s==='sph'?S1(L(`Cube the radius: ${r}³ = ?`,`Eleva el radio al cubo: ${r}³ = ?`),r**3,L(`${r} × ${r} × ${r}`,`${r} × ${r} × ${r}`)):S1(L(`Square the radius: ${r}² = ?`,`Eleva el radio al cuadrado: ${r}² = ?`),r*r,L(`${r} × ${r}`,`${r} × ${r}`)),
+    S1(s==='cyl'?L(`Multiply 3.14 · ${r*r} · ${h}. Round to the nearest tenth.`,`Multiplica 3.14 · ${r*r} · ${h}. Redondea a la décima.`):s==='cone'?L(`Multiply 3.14 · ${r*r} · ${h}, then divide by 3. Round to the nearest tenth.`,`Multiplica 3.14 · ${r*r} · ${h} y divide entre 3. Redondea a la décima.`):L(`Multiply 4 · 3.14 · ${r**3}, then divide by 3. Round to the nearest tenth.`,`Multiplica 4 · 3.14 · ${r**3} y divide entre 3. Redondea a la décima.`),a,L('Use a calculator for the multiplication. Check the tenths digit.','Usa calculadora para multiplicar. Revisa la cifra de las décimas.'),{tol:Math.max(.1,a*.006),at:a.toFixed(1)})];
+  return{type:'num',text:t,ans:a,ansText:a.toFixed(1),tol:Math.max(.1,a*.006),g,
+    hint:L('Find the formula on the STAAR reference sheet. Square (or cube) the radius before multiplying.','Busca la fórmula en la hoja de referencia de STAAR. Eleva el radio al cuadrado (o al cubo) antes de multiplicar.'),steps:st}};
+
+G['8.7B']=()=>{if(Math.random()<.6){const l=ri(3,12),w=ri(2,10),h=ri(2,9),sa=2*(l*w+l*h+w*h);
+    const g=[S1(L(`Front and back faces: l · h = ${l} · ${h} = ?`,`Caras de frente y atrás: l · h = ${l} · ${h} = ?`),l*h,L('Area of a rectangle = length × width.','Área de un rectángulo = largo × ancho.')),
+      S1(L(`Top and bottom faces: l · w = ${l} · ${w} = ?`,`Caras de arriba y abajo: l · w = ${l} · ${w} = ?`),l*w,L(`${l} × ${w}`,`${l} × ${w}`)),
+      S1(L(`Left and right faces: w · h = ${w} · ${h} = ?`,`Caras laterales: w · h = ${w} · ${h} = ?`),w*h,L(`${w} × ${h}`,`${w} × ${h}`)),
+      S1(L('Each face has a matching partner. Add the three areas and double. Total surface area = ?','Cada cara tiene una pareja igual. Suma las tres áreas y multiplica por 2. Área total = ?'),sa,L(`2 × (${l*h} + ${l*w} + ${w*h})`,`2 × (${l*h} + ${l*w} + ${w*h})`))];
+    return{g,type:'num',text:L(`A rectangular box is ${l} in. long, ${w} in. wide and ${h} in. tall. What is its total surface area in square inches?`,`Una caja rectangular mide ${l} pulg. de largo, ${w} pulg. de ancho y ${h} pulg. de alto. ¿Cuál es su área total en pulgadas cuadradas?`),
+      ans:sa,ansText:String(sa),hint:L('A box has 3 pairs of matching faces. Find each face area, add them, then double.','Una caja tiene 3 pares de caras iguales. Calcula el área de cada cara, súmalas y multiplica por 2.'),
+      steps:[{m:'S = 2(lw + lh + wh)'},{m:`S = 2(${l*w} + ${l*h} + ${w*h}) = 2(${l*w+l*h+w*h}) = ${sa}`}]}}
+  const r=ri(2,8),h=ri(4,15),la=Math.round(2*3.14*r*h*10)/10;
+  const g=[S1(L(`Unrolled, the label is a rectangle. Its width is the circumference 2πr. Using 3.14, what is 2 · 3.14 · ${r}?`,`Desenrollada, la etiqueta es un rectángulo. Su ancho es la circunferencia 2πr. Usando 3.14, ¿cuánto es 2 · 3.14 · ${r}?`),r2(2*3.14*r),L('Multiply 6.28 by the radius.','Multiplica 6.28 por el radio.'),{tol:.02}),
+    S1(L(`Multiply that width by the height ${h} to get the area. Round to the nearest tenth.`,`Multiplica ese ancho por la altura ${h} para obtener el área. Redondea a la décima.`),la,L(`${f2(2*3.14*r)} × ${h}`,`${f2(2*3.14*r)} × ${h}`),{tol:Math.max(.1,la*.006),at:la.toFixed(1)})];
+  return{g,type:'num',text:L(`A label wraps around the side of a can (not the top or bottom). The can has a radius of ${r} cm and a height of ${h} cm. What is the area of the label in square centimeters? Use π ≈ 3.14.`,`Una etiqueta cubre el lado de una lata (no la tapa ni el fondo). La lata tiene un radio de ${r} cm y una altura de ${h} cm. ¿Cuál es el área de la etiqueta en centímetros cuadrados? Usa π ≈ 3.14.`),
+    ans:la,ansText:la.toFixed(1),tol:Math.max(.1,la*.006),hint:L('Unrolled, the label is a rectangle: its width is the circumference (2πr) and its height is h.','Desenrollada, la etiqueta es un rectángulo: su ancho es la circunferencia (2πr) y su altura es h.'),
+    steps:[L('This is the lateral surface area:','Es el área lateral:'),{m:'S = 2πrh'},{m:`S = 2 · 3.14 · ${r} · ${h} ≈ ${la.toFixed(1)}`}]}};
+
+G['8.5D']=()=>{let c=pick(['study','plant']),m,b,x,o;
+  if(c==='study'){m=ri(3,5);b=ri(40,50);x=ri(8,10);o={xr:[0,10],yr:[0,100],xs:1,ys:10,xl:2,yl:20,xt:L('hours','horas'),yt:L('score','puntaje')}}
+  else{m=ri(2,4);b=ri(3,8);x=ri(10,12);o={xr:[0,12],yr:[0,60],xs:1,ys:5,xl:2,yl:10,xt:L('weeks','semanas'),yt:L('height (cm)','altura (cm)')}}
+  const dots=[1,2,3,4,5,6,7].map(v=>[v,Math.max(1,m*v+b+ri(-5,5))]);const y=m*x+b;
+  const t=c==='study'?L(`The scatterplot compares hours studied (x) with test scores (y). The trend line is y = ${lin(m,b)}. Predict the score for a student who studies ${x} hours.`,`El diagrama de dispersión compara las horas de estudio (x) con los puntajes (y). La línea de tendencia es y = ${lin(m,b)}. Predice el puntaje de un estudiante que estudia ${x} horas.`)
+    :L(`The scatterplot shows a plant's height in cm (y) after x weeks. The trend line is y = ${lin(m,b)}. Predict the height after ${x} weeks.`,`El diagrama de dispersión muestra la altura de una planta en cm (y) después de x semanas. La línea de tendencia es y = ${lin(m,b)}. Predice la altura después de ${x} semanas.`);
+  const g=[S1(L('Which number do you substitute for x?','¿Qué número sustituyes por x?'),x,L('It is the value the question asks about.','Es el valor sobre el que pregunta el problema.')),
+    S1(L(`Multiply by the slope: ${m} · ${x} = ?`,`Multiplica por la pendiente: ${m} · ${x} = ?`),m*x,L(`${m} × ${x}`,`${m} × ${x}`)),
+    S1(L(`Add b = ${b}. What is the prediction?`,`Suma b = ${b}. ¿Cuál es la predicción?`),y,L(`${m*x} + ${b}`,`${m*x} + ${b}`))];
+  return{g,type:'num',text:t,disp:()=>plot({...o,xt:tx(o.xt),yt:tx(o.yt),dots,lines:[{m,b}],aria:'scatterplot with trend line'}),ans:y,ansText:String(y),
+    hint:L('Substitute the x-value into the trend line equation.','Sustituye el valor de x en la ecuación de la línea de tendencia.'),
+    steps:[{m:`y = ${lin(m,b)}`},{m:`y = ${m}(${x}) + ${b} = ${m*x} + ${b} = ${y}`}]}};
+
+G['8.12D']=()=>{const P=pick([500,1000,1200,1500,2000,2500,5000]),rp=pick([2,3,4,5,6]),t=ri(2,5),r=rp/100;
+  const si=r2(P*r*t),A=r2(P*Math.pow(1+r,t)),ci=r2(A-P),diff=r2(ci-si);
+  return{type:'num',text:L(`You deposit ${money(P)} for ${t} years at ${rp}% interest. How much more interest do you earn if it is compounded annually instead of simple interest? Round to the nearest cent.`,`Depositas ${money(P)} durante ${t} años a una tasa de ${rp}%. ¿Cuánto interés más ganas si es compuesto anualmente en vez de interés simple? Redondea al centavo más cercano.`),
+    ans:diff,ansText:money(diff),tol:.02,
+    g:[S1(L(`Simple interest: I = P · r · t = ${P} · ${r} · ${t}. What is I?`,`Interés simple: I = P · r · t = ${P} · ${r} · ${t}. ¿Cuánto es I?`),si,L(`Write ${rp}% as the decimal ${r}, then multiply.`,`Escribe ${rp}% como el decimal ${r} y multiplica.`),{tol:.02,at:money(si)}),
+      S1(L(`Compound balance: A = P(1 + r)ᵗ = ${P} · ${1+r}^${t}. What is A? Round to the cent.`,`Saldo compuesto: A = P(1 + r)ᵗ = ${P} · ${1+r}^${t}. ¿Cuánto es A? Redondea al centavo.`),A,L(`Multiply ${P} by ${1+r}, ${t} times (or use the ^ key).`,`Multiplica ${P} por ${1+r}, ${t} veces (o usa la tecla ^).`),{tol:.02,at:money(A)}),
+      S1(L('Compound interest = A − P. What is it?','Interés compuesto = A − P. ¿Cuánto es?'),ci,L(`${money(A)} − ${money(P)}`,`${money(A)} − ${money(P)}`),{tol:.02,at:money(ci)}),
+      S1(L('How much more does compound earn? Subtract: compound − simple.','¿Cuánto más gana el compuesto? Resta: compuesto − simple.'),diff,L(`${money(ci)} − ${money(si)}`,`${money(ci)} − ${money(si)}`),{tol:.02,at:money(diff)})],
+    hint:L('Find each one separately. Simple: I = Prt. Compound: A = P(1 + r)ᵗ, then subtract P.','Calcula cada uno por separado. Simple: I = Prt. Compuesto: A = P(1 + r)ᵗ y luego resta P.'),
+    steps:[L('Simple interest:','Interés simple:'),{m:`I = ${P} · ${r} · ${t} = ${money(si)}`},L('Compound interest:','Interés compuesto:'),{m:`A = ${P}(1 + ${r})^${t} = ${money(A)}  →  ${money(A)} − ${money(P)} = ${money(ci)}`},L('Difference:','Diferencia:'),{m:`${money(ci)} − ${money(si)} = ${money(diff)}`}]}};
+
+/* ---------- curriculum ---------- */
+const CATS=[
+ {id:'prop',items:'12–14',n:L('Proportional & non-proportional','Proporcional y no proporcional'),sk:['8.4B','8.4C','8.5G','8.5I']},
+ {id:'geo2',items:'6–9',n:L('2-D geometry','Geometría 2D'),sk:['8.3C','8.10C']},
+ {id:'geo3',items:'5–6',n:L('3-D geometry','Geometría 3D'),sk:['8.7A','8.7B']},
+ {id:'num',items:'4–5',n:L('Real numbers','Números reales'),sk:['8.2D']},
+ {id:'fin',items:'3–4',n:L('Personal finance','Educación financiera'),sk:['8.12D']},
+ {id:'eq',items:'2–4',n:L('Equations','Ecuaciones'),sk:['8.8C']},
+ {id:'pyth',items:'2–4',n:L('Pythagorean theorem','Teorema de Pitágoras'),sk:['8.7C']},
+ {id:'data',items:'2–4',n:L('Data analysis','Análisis de datos'),sk:['8.5D']}];
+const NAMES={'8.4B':L('Unit rate as slope','Tasa unitaria como pendiente'),'8.4C':L('Slope & y-intercept from a table','Pendiente e intersección desde una tabla'),
+ '8.5G':L('Is it a function?','¿Es una función?'),'8.5I':L('Write y = mx + b','Escribir y = mx + b'),'8.3C':L('Dilations on the plane','Dilataciones en el plano'),
+ '8.10C':L('Transformation rules','Reglas de transformación'),'8.7A':L('Volume: cylinder, cone, sphere','Volumen: cilindro, cono, esfera'),'8.7B':L('Surface area','Área superficial'),
+ '8.2D':L('Order real numbers','Ordenar números reales'),'8.12D':L('Simple vs. compound interest','Interés simple y compuesto'),'8.8C':L('Variables on both sides','Variables en ambos lados'),
+ '8.7C':L('Pythagorean theorem','Teorema de Pitágoras'),'8.5D':L('Predict with a trend line','Predecir con una línea de tendencia')};
+const ORDER=CATS.flatMap(c=>c.sk);const catOf=id=>CATS.find(c=>c.sk.includes(id));
+
+const U={sub:L('STAAR readiness standards · learn, practice together, then on your own','Estándares de preparación STAAR · aprende, practica con ayuda y luego por tu cuenta'),
+ check:L('Quick check','Diagnóstico rápido'),reset:L('Reset progress','Borrar progreso'),resetSure:L('Tap again to erase','Toca otra vez para borrar'),
+ map:L('Skill map','Mapa de habilidades'),mapNote:L('Ordered by how many of the 40 STAAR questions each category usually gets.','Ordenado según cuántas de las 40 preguntas de STAAR suele tener cada categoría.'),
+ items:L('items','preguntas'),new:L('Not started','Sin empezar'),working:L('Practicing','Practicando'),gap:L('Gap','Brecha'),ok:L('Looks solid','Se ve bien'),mastered:L('Mastered','Dominado'),
+ nextUp:L('Next up','Siguiente'),submit:L('Check answer','Revisar respuesta'),hint:L('Show hint','Ver pista'),next:L('Next question','Siguiente pregunta'),
+ correct:L('Correct.','¡Correcto!'),wrong:L('Not yet. The answer is','Todavía no. La respuesta es'),steps:L('Worked solution','Solución paso a paso'),
+ streak:L('in a row · 3 = mastered','seguidas · 3 = dominado'),numHelp:L('Fractions like 3/4 and negatives like -2 work.','Puedes escribir fracciones como 3/4 y negativos como -2.'),
+ bad:L('Enter a number, for example 12, -3.5 or 3/4.','Escribe un número, por ejemplo 12, -3.5 o 3/4.'),
+ welT:L('Find the gaps first','Primero encuentra las brechas'),welB:L('The quick check asks one question per readiness standard (13 total) and builds a practice order from the results.','El diagnóstico rápido hace una pregunta por cada estándar de preparación (13 en total) y arma un orden de práctica con los resultados.'),
+ start:L('Start quick check','Empezar diagnóstico'),qOf:(i,n)=>L(`Quick check · ${i} of ${n}`,`Diagnóstico · ${i} de ${n}`),exit:L('Exit','Salir'),
+ sumT:L('Quick check results','Resultados del diagnóstico'),sumB:(ok,n)=>L(`${ok} of ${n} correct. Practice the gaps in this order, starting with the categories that carry the most STAAR questions.`,`${ok} de ${n} correctas. Practica las brechas en este orden, empezando por las categorías con más preguntas de STAAR.`),
+ noGaps:L('No gaps found. Keep practicing each skill until it reaches mastery.','No se encontraron brechas. Sigue practicando cada habilidad hasta dominarla.'),
+ practice:L('Start practicing','Empezar a practicar'),masteredNow:L('Mastered: three correct in a row.','Dominado: tres correctas seguidas.'),goNext:L('Go to next skill','Ir a la siguiente habilidad'),
+ foot:L('Standards and STAAR item ranges from the lead4ward Grade 8 Math Snapshot (TEA source). Progress is saved in this browser only.','Estándares y rangos de preguntas STAAR tomados del Snapshot de Matemáticas de 8.º grado de lead4ward (fuente: TEA). El progreso se guarda solo en este navegador.')};
+
+/* ---------- lessons: plain-language explanation, bilingual vocabulary, common mistake ---------- */
+const M=s=>({m:s});
+const LES={
+'8.4B':{idea:[L('In a proportional relationship, y is always the same multiple of x. Its graph is a straight line that goes through the origin (0, 0).','En una relación proporcional, y siempre es el mismo múltiplo de x. Su gráfica es una recta que pasa por el origen (0, 0).'),
+  L('The unit rate is how much y grows for every 1 unit of x, like dollars per pound or miles per hour. On the graph, the unit rate is the slope: the line rises by the unit rate each time it moves 1 to the right.','La tasa unitaria es cuánto crece y por cada 1 unidad de x, como dólares por libra o millas por hora. En la gráfica, la tasa unitaria es la pendiente: la recta sube esa cantidad cada vez que avanza 1 a la derecha.'),
+  L('To find it, pick any point (x, y) on the line other than the origin and divide:','Para encontrarla, elige cualquier punto (x, y) de la recta que no sea el origen y divide:'),M('unit rate = y ÷ x')],
+  vocab:[['unit rate','tasa unitaria'],['slope','pendiente'],['origin','origen'],['proportional','proporcional']],
+  watch:L('Divide y by x, not x by y. The unit rate is "y per one x".','Divide y entre x, no x entre y. La tasa unitaria es "y por cada x".')},
+'8.4C':{idea:[L('The slope, or rate of change, tells how much y changes each time x changes by 1.','La pendiente, o tasa de cambio, dice cuánto cambia y cada vez que x cambia en 1.'),
+  L('From a table, compare two columns:','En una tabla, compara dos columnas:'),M('m = (change in y) ÷ (change in x)'),
+  L('The y-intercept b is the value of y when x = 0. If x = 0 is not in the table, use any point and solve:','La intersección con el eje y, b, es el valor de y cuando x = 0. Si x = 0 no está en la tabla, usa cualquier punto y despeja:'),M('b = y − m · x')],
+  vocab:[['rate of change','tasa de cambio'],['slope','pendiente'],['y-intercept','intersección con el eje y'],['table','tabla']],
+  watch:L('Check how much x goes up between columns. If x jumps by 2, divide the change in y by 2, not by 1.','Revisa cuánto aumenta x entre columnas. Si x salta de 2 en 2, divide el cambio en y entre 2, no entre 1.')},
+'8.5G':{idea:[L('A function is a rule that gives exactly one output for each input. The inputs are the x-values and the outputs are the y-values.','Una función es una regla que da exactamente una salida para cada entrada. Las entradas son los valores de x y las salidas son los valores de y.'),
+  L('The test: look for a repeated x-value. If the same x goes to two different y-values, it is not a function. Repeated y-values are allowed.','La prueba: busca un valor de x repetido. Si la misma x va a dos valores de y diferentes, no es una función. Los valores de y repetidos sí se permiten.'),
+  L('On a graph, use the vertical line test: if any vertical line touches the graph more than once, it is not a function.','En una gráfica, usa la prueba de la recta vertical: si alguna recta vertical toca la gráfica más de una vez, no es una función.')],
+  vocab:[['function','función'],['input','entrada'],['output','salida'],['ordered pair','par ordenado']],
+  watch:L('Two points with the same y-value do not break the rule. Only a repeated x with different y-values does.','Dos puntos con el mismo valor de y no rompen la regla. Solo una x repetida con valores de y diferentes la rompe.')},
+'8.5I':{idea:[L('The equation y = mx + b describes a straight-line relationship.','La ecuación y = mx + b describe una relación lineal.'),
+  L('m is the rate: what changes for each 1 unit of x. Look for words like "per" and "each".','m es la tasa: lo que cambia por cada 1 unidad de x. Busca palabras como "por" y "cada".'),
+  L('b is the starting value: what you have when x = 0. Look for words like "fee", "starts with" and "initial".','b es el valor inicial: lo que hay cuando x = 0. Busca palabras como "cuota", "empieza con" e "inicial".'),
+  L('If the amount goes down over time, m is negative.','Si la cantidad disminuye con el tiempo, m es negativa.')],
+  vocab:[['slope','pendiente'],['y-intercept','intersección con el eje y'],['rate','tasa'],['initial value','valor inicial']],
+  watch:L('Swapping m and b is the most common mistake. The rate always goes next to x.','Intercambiar m y b es el error más común. La tasa siempre va junto a la x.')},
+'8.8C':{idea:[L('An equation is like a balanced scale. Whatever you do to one side, you must do to the other side.','Una ecuación es como una balanza. Lo que hagas en un lado, hazlo también en el otro.'),
+  L('Step 1: collect the x-terms on one side by adding or subtracting an x-term on both sides.','Paso 1: junta los términos con x en un lado sumando o restando un término con x en ambos lados.'),
+  L('Step 2: move the constant numbers to the other side.','Paso 2: pasa los números constantes al otro lado.'),
+  L('Step 3: divide both sides by the number in front of x.','Paso 3: divide ambos lados entre el número que acompaña a la x.'),
+  L('Check: substitute your answer into both sides. They should be equal.','Comprueba: sustituye tu respuesta en ambos lados. Deben ser iguales.')],
+  vocab:[['coefficient','coeficiente'],['constant','constante'],['both sides','ambos lados'],['solve','resolver']],
+  watch:L('Subtracting a negative is the same as adding. Write each step so you can track the signs.','Restar un negativo es lo mismo que sumar. Escribe cada paso para no perder los signos.')},
+'8.3C':{idea:[L('A dilation makes a figure larger or smaller without changing its shape.','Una dilatación hace una figura más grande o más pequeña sin cambiar su forma.'),
+  L('When the center of dilation is the origin, multiply both coordinates by the scale factor k:','Cuando el centro de dilatación es el origen, multiplica ambas coordenadas por el factor de escala k:'),M('(x, y) → (kx, ky)'),
+  L('If k is greater than 1, the image is larger. If k is between 0 and 1, the image is smaller. Angles stay the same; side lengths are multiplied by k.','Si k es mayor que 1, la imagen es más grande. Si k está entre 0 y 1, es más pequeña. Los ángulos no cambian; las longitudes se multiplican por k.')],
+  vocab:[['dilation','dilatación'],['scale factor','factor de escala'],['image','imagen'],['center of dilation','centro de dilatación']],
+  watch:L('Multiply, don’t add. Adding k to each coordinate is a translation, not a dilation.','Multiplica, no sumes. Sumar k a cada coordenada es una traslación, no una dilatación.')},
+'8.10C':{idea:[L('Each transformation has a coordinate rule. Learn these six:','Cada transformación tiene una regla de coordenadas. Aprende estas seis:'),
+  M('reflect over x-axis: (x, y) → (x, −y)'),M('reflect over y-axis: (x, y) → (−x, y)'),M('rotate 90° counterclockwise: (x, y) → (−y, x)'),M('rotate 180°: (x, y) → (−x, −y)'),M('rotate 270° counterclockwise: (x, y) → (y, −x)'),M('translate a right, b up: (x, y) → (x + a, y + b)'),
+  L('Read the direction carefully. A 90° clockwise turn is the same as a 270° counterclockwise turn.','Lee la dirección con cuidado. Un giro de 90° en el sentido de las manecillas es igual a uno de 270° en sentido contrario.')],
+  vocab:[['reflection','reflexión'],['rotation','rotación'],['translation','traslación'],['counterclockwise','sentido contrario a las manecillas']],
+  watch:L('In 90° and 270° rotations the coordinates switch places. Switch first, then fix the sign.','En las rotaciones de 90° y 270° las coordenadas cambian de lugar. Primero cámbialas y luego ajusta el signo.')},
+'8.7A':{idea:[L('Volume is the space inside a solid, measured in cubic units.','El volumen es el espacio dentro de un sólido y se mide en unidades cúbicas.'),
+  M('cylinder: V = πr²h'),M('cone: V = (1/3)πr²h'),M('sphere: V = (4/3)πr³'),
+  L('A cone holds exactly one third of a cylinder with the same base and height. All three formulas are on the STAAR reference sheet; the skill is picking the right one and using the radius.','Un cono contiene exactamente un tercio de un cilindro con la misma base y altura. Las tres fórmulas están en la hoja de referencia de STAAR; la habilidad es escoger la correcta y usar el radio.')],
+  vocab:[['volume','volumen'],['radius','radio'],['diameter','diámetro'],['cubic units','unidades cúbicas']],
+  watch:L('If you are given the diameter, divide by 2 first. Square or cube the radius before multiplying by π.','Si te dan el diámetro, divídelo entre 2 primero. Eleva el radio al cuadrado o al cubo antes de multiplicar por π.')},
+'8.7B':{idea:[L('Surface area is the total area of all the faces of a solid, in square units. Picture unfolding it flat (a net) and adding the areas of the pieces.','El área superficial es el área total de todas las caras de un sólido, en unidades cuadradas. Imagina desdoblarlo (una red) y sumar las áreas de las piezas.'),
+  M('rectangular prism: S = 2(lw + lh + wh)'),
+  L('Lateral area means only the sides, not the top and bottom. For a cylinder, the side unrolls into a rectangle:','El área lateral es solo de los lados, sin la tapa ni la base. En un cilindro, el lado se desenrolla en un rectángulo:'),M('cylinder lateral: S = 2πrh')],
+  vocab:[['surface area','área superficial'],['lateral area','área lateral'],['face','cara'],['net','red (desarrollo plano)']],
+  watch:L('Lateral area leaves out the bases. Total surface area includes them.','El área lateral no incluye las bases. El área total sí las incluye.')},
+'8.2D':{idea:[L('Real numbers include fractions, decimals, negatives and irrational numbers like π and √2.','Los números reales incluyen fracciones, decimales, negativos y números irracionales como π y √2.'),
+  L('To compare them, change every number to a decimal. π ≈ 3.14. For a square root, find the perfect squares around it: √20 is between √16 = 4 and √25 = 5, so √20 ≈ 4.5.','Para compararlos, convierte cada número a decimal. π ≈ 3.14. Para una raíz cuadrada, busca los cuadrados perfectos a su alrededor: √20 está entre √16 = 4 y √25 = 5, así que √20 ≈ 4.5.'),
+  L('Then place them on a number line. Negative numbers are always the least.','Luego colócalos en una recta numérica. Los negativos siempre son los menores.')],
+  vocab:[['irrational number','número irracional'],['perfect square','cuadrado perfecto'],['square root','raíz cuadrada'],['number line','recta numérica']],
+  watch:L('With negatives, a bigger digit means a smaller number: −2.5 is less than −1.2.','Con negativos, un dígito más grande significa un número menor: −2.5 es menor que −1.2.')},
+'8.12D':{idea:[L('Simple interest is earned only on the original amount P:','El interés simple se gana solo sobre la cantidad original P:'),M('I = P · r · t'),
+  L('Compound interest is earned on the original amount plus the interest already earned, so it grows faster:','El interés compuesto se gana sobre la cantidad original más el interés ya ganado, por eso crece más rápido:'),M('A = P(1 + r)ᵗ     interest = A − P'),
+  L('Always write the rate as a decimal: 4% = 0.04.','Siempre escribe la tasa como decimal: 4% = 0.04.')],
+  vocab:[['principal','capital'],['interest rate','tasa de interés'],['simple interest','interés simple'],['compound interest','interés compuesto']],
+  watch:L('A is the total balance, not the interest. Subtract P to get the interest.','A es el saldo total, no el interés. Resta P para obtener el interés.')},
+'8.7C':{idea:[L('In a right triangle, the two shorter sides are the legs (a and b). The longest side, across from the right angle, is the hypotenuse (c).','En un triángulo rectángulo, los dos lados cortos son los catetos (a y b). El lado más largo, frente al ángulo recto, es la hipotenusa (c).'),
+  M('a² + b² = c²'),
+  L('Finding the hypotenuse: square both legs, add, then take the square root.','Para la hipotenusa: eleva ambos catetos al cuadrado, súmalos y saca la raíz cuadrada.'),
+  L('Finding a leg: square both known sides, subtract, then take the square root.','Para un cateto: eleva al cuadrado los lados conocidos, resta y saca la raíz cuadrada.')],
+  vocab:[['right triangle','triángulo rectángulo'],['leg','cateto'],['hypotenuse','hipotenusa'],['square root','raíz cuadrada']],
+  watch:L('Add the squares only when finding the hypotenuse. Finding a leg means subtracting.','Suma los cuadrados solo cuando buscas la hipotenusa. Para un cateto, resta.')},
+'8.5D':{idea:[L('A scatterplot shows pairs of data as points. A trend line is a straight line that follows the overall pattern of the points.','Un diagrama de dispersión muestra pares de datos como puntos. Una línea de tendencia es una recta que sigue el patrón general de los puntos.'),
+  L('To make a prediction, substitute the x-value into the trend line equation and calculate y.','Para hacer una predicción, sustituye el valor de x en la ecuación de la línea de tendencia y calcula y.'),
+  L('A prediction is an estimate. Real data points can be above or below the line.','Una predicción es una estimación. Los datos reales pueden quedar arriba o abajo de la recta.')],
+  vocab:[['scatterplot','diagrama de dispersión'],['trend line','línea de tendencia'],['prediction','predicción'],['bivariate data','datos bivariados']],
+  watch:L('Use the equation, not the nearest dot on the graph.','Usa la ecuación, no el punto más cercano de la gráfica.')}};
+
+Object.assign(U,{learn:L('Learn','Aprende'),guided:L('Guided practice','Práctica guiada'),own:L('On my own','Por mi cuenta'),
+ words:L('Key words','Palabras clave'),watch:L('Watch out','Cuidado'),example:L('Worked example','Ejemplo resuelto'),
+ showStep:L('Show next step','Ver siguiente paso'),answerIs:L('Answer:','Respuesta:'),tryTogether:L('Try one together','Hagamos uno juntos'),another:L('Another example','Otro ejemplo'),
+ stepOf:(i,n)=>L(`Step ${i} of ${n}`,`Paso ${i} de ${n}`),check1:L('Check step','Revisar paso'),stepHint:L('Hint:','Pista:'),
+ shown:L('Here is this step. Read it, then continue.','Aquí está este paso. Léelo y luego continúa.'),cont:L('Continue','Continuar'),
+ solved:L('Solved together!','¡Lo resolvimos juntos!'),solvedB:(n,h)=>L(`${n} steps, ${h} with help.`,`${n} pasos, ${h} con ayuda.`),
+ readyOwn:L('Nice work with no help. You are ready to try one on your own.','Buen trabajo sin ayuda. Ya puedes intentar uno por tu cuenta.'),
+ oneMore:L('Try one more guided problem before working on your own.','Haz otro problema guiado antes de trabajar por tu cuenta.'),
+ anotherG:L('Another guided problem','Otro problema guiado'),goOwn:L('Try one on my own','Intentar uno por mi cuenta'),
+ walk:L('Walk me through a similar one','Guíame con uno parecido'),review:L('Review the lesson','Repasar la lección'),
+ stage:L('How to study each skill: read the lesson, solve one or two together, then practice on your own.','Cómo estudiar cada habilidad: lee la lección, resuelve uno o dos juntos y luego practica por tu cuenta.')});
+
+/* ---------- state ---------- */
+const prog=id=>S.p[id]||(S.p[id]={a:0,c:0,s:0,m:false,chk:null});
+function status(id){const p=S.p[id];if(!p)return'new';if(p.m)return'mastered';if(p.chk===false||(p.a>=3&&p.c/p.a<.6))return'gap';if(p.a>0)return'working';if(p.chk===true)return'ok';return'new'}
+function nextUp(exclude){for(const want of['gap','working','new','ok'])for(const id of ORDER)if(id!==exclude&&status(id)===want)return id;return null}
+let mode={t:'study'};let cur=null;let resetArm=null;
+function setView(view){cur.view=view;cur.err=false;
+  if(view==='learn'){cur.ex=G[cur.id]();cur.exStep=1}
+  else if(view==='guided'){cur.gq=G[cur.id]();cur.gi=0;cur.gt=0;cur.gshow=false;cur.gval='';cur.gpick=null;cur.glog=[]}
+  else{cur.q=G[cur.id]();cur.done=false;cur.pick=null;cur.hint=false;cur.res=null;cur.val='';cur.justMastered=false}}
+function openSkill(id,view){cur={id};if(!view){const st=status(id);view=(st==='new'||st==='gap')?'learn':'practice'}setView(view)}
+
+/* ---------- render ---------- */
+const $=s=>document.querySelector(s);
+function renderChrome(){document.documentElement.lang=S.lang;$('#home-link').textContent=S.lang==='es'?'← Todos los grados':'← All grades';$('#sub').textContent=tx(U.sub);
+  $('#lang-en').setAttribute('aria-pressed',S.lang==='en');$('#lang-es').setAttribute('aria-pressed',S.lang==='es');
+  $('#btn-check').textContent=tx(U.check);$('#btn-reset').textContent=tx(resetArm?U.resetSure:U.reset);$('#btn-reset').classList.toggle('warn',!!resetArm);
+  $('#foot').textContent=tx(U.foot)}
+function renderMap(){const nu=nextUp();let h=`<h2>${tx(U.map)}</h2><p class="note">${tx(U.mapNote)}</p>`;
+  for(const c of CATS){h+=`<div class="cat"><div class="cat-h"><span>${tx(c.n)}</span><b>${c.items} ${tx(U.items)}</b></div>`;
+    for(const id of c.sk){const st=status(id),p=S.p[id],on=cur&&cur.id===id&&mode.t==='study';
+      h+=`<button class="sk" data-skill="${id}" aria-current="${on}"><span class="code">${id}</span><span class="nm">${tx(NAMES[id])}${id===nu&&!on?`<span class="nx">${tx(U.nextUp)}</span>`:''}</span><span class="pill st-${st}" title="${p&&p.a?p.c+'/'+p.a:''}">${tx(U[st])}</span></button>`}
+    h+='</div>'}
+  $('#map').innerHTML=h}
+const lineHTML=s=>s&&s.m?`<span class="m">${esc(s.m)}</span>`:esc(tx(s));
+function stepsHTML(st,n){return`<ol class="steps">${st.slice(0,n??st.length).map(s=>`<li${s&&s.m?' class="m"':''}>${lineHTML(s)}</li>`).join('')}</ol>`}
+function probHTML(q){return`<p class="qtext">${esc(tx(q.text))}</p>`+(q.disp?`<div class="vis">${q.disp()}</div>`:'')}
+function choicesHTML(list,attr,sel,done,ans,mono){return`<div class="choices">${list.map((ch,i)=>{let cl='choice'+(mono?'':' txt');
+  if(done){if(i===ans)cl+=' right';else if(i===sel)cl+=' wrongpick'}else if(i===sel)cl+=' sel';
+  return`<button class="${cl}" ${attr}="${i}" ${done?'disabled':''}>${esc(tx(ch))}</button>`}).join('')}</div>`}
+function tabsHTML(){return`<nav class="tabs" aria-label="stages">${[['learn',U.learn],['guided',U.guided],['practice',U.own]].map(([v,l],i)=>`<button data-view="${v}" aria-current="${cur.view===v}"><span class="tn">${i+1}</span>${tx(l)}</button>`).join('')}</nav>`}
+
+function learnHTML(){const les=LES[cur.id],q=cur.ex,n=q.steps.length,all=cur.exStep>=n;
+  let h=`<div class="lesson"><div class="idea">${les.idea.map(x=>x.m?`<div class="formula">${esc(x.m)}</div>`:`<p>${esc(tx(x))}</p>`).join('')}</div>
+    <div class="side"><div class="words"><h4>${tx(U.words)}</h4><dl>${les.vocab.map(([e,s])=>`<div><dt>${esc(S.lang==='en'?e:s)}</dt><dd>${esc(S.lang==='en'?s:e)}</dd></div>`).join('')}</dl></div>
+    <div class="watch"><h4>${tx(U.watch)}</h4><p>${esc(tx(les.watch))}</p></div></div></div>`;
+  h+=`<div class="example"><h3>${tx(U.example)}</h3>${probHTML(q)}${stepsHTML(q.steps,cur.exStep)}`;
+  if(all)h+=`<p class="exans"><b>${tx(U.answerIs)}</b> <span class="m">${esc(q.type==='mc'?tx(q.choices[q.ans]):q.ansText)}</span></p>`;
+  h+=`<div class="actions">${all?`<button class="btn primary" data-act="to-guided">${tx(U.tryTogether)} →</button><button class="btn" data-act="new-example">${tx(U.another)}</button>`:`<button class="btn primary" data-act="ex-step">${tx(U.showStep)}</button>`}</div></div>`;
+  return h}
+
+function guidedHTML(){const q=cur.gq,g=q.g,n=g.length;let h=probHTML(q)+`<ol class="gsteps">`;
+  for(let i=0;i<n&&i<=cur.gi;i++){const s=g[i];
+    if(i<cur.gi){const lg=cur.glog[i];h+=`<li class="gs done"><span class="gn ${lg?'help':'ok'}">${lg?'•':'✓'}</span><div><p>${esc(tx(s.p))}</p><p class="ga m">${esc(tx(s.at))}</p></div></li>`}
+    else{h+=`<li class="gs now"><span class="gn">${i+1}</span><div class="gbody"><p class="eyebrow">${tx(U.stepOf(i+1,n))}</p><p class="gp">${esc(tx(s.p))}</p>`;
+      if(s.type==='mc')h+=choicesHTML(s.choices,'data-gchoice',cur.gpick,cur.gshow,s.ans,s.mono);
+      else h+=`<div class="answer"><input id="gans" inputmode="decimal" autocomplete="off" aria-label="answer" ${cur.gshow?'disabled':''} value="${esc(cur.gshow?tx(s.at):cur.gval||'')}"></div>`;
+      if(cur.err)h+=`<div class="hintbox">${tx(U.bad)}</div>`;
+      if(cur.gt>0&&!cur.gshow)h+=`<div class="hintbox"><b>${tx(U.stepHint)}</b> ${esc(tx(s.h))}</div>`;
+      if(cur.gshow)h+=`<div class="hintbox"><b>${tx(U.answerIs)}</b> <span class="m">${esc(tx(s.at))}</span>. ${tx(U.shown)}</div>`;
+      h+=`<div class="actions">${cur.gshow?`<button class="btn primary" data-act="g-cont">${tx(U.cont)}</button>`:`<button class="btn primary" data-act="g-check" ${s.type==='mc'&&cur.gpick==null?'disabled':''}>${tx(U.check1)}</button>`}</div></div></li>`}}
+  h+='</ol>';
+  if(cur.gi>=n){const helped=cur.glog.filter(Boolean).length;h+=`<div class="fb ok" aria-live="polite"><strong>${tx(U.solved)}</strong><div>${tx(U.solvedB(n,helped))} ${tx(helped===0?U.readyOwn:U.oneMore)}</div></div>
+    <div class="actions">${helped===0?`<button class="btn primary" data-act="to-own">${tx(U.goOwn)} →</button><button class="btn" data-act="to-guided">${tx(U.anotherG)}</button>`:`<button class="btn primary" data-act="to-guided">${tx(U.anotherG)}</button><button class="btn" data-act="to-own">${tx(U.goOwn)}</button>`}</div>`}
+  return h}
+
+function practiceHTML(){const q=cur.q;let h=probHTML(q);
+  if(q.type==='mc')h+=choicesHTML(q.choices,'data-choice',cur.pick,cur.done,q.ans,q.mono);
+  else h+=`<div class="answer"><input id="ans" inputmode="decimal" autocomplete="off" aria-label="answer" ${cur.done?'disabled':''} value="${esc(cur.val||'')}"></div><p class="help">${tx(U.numHelp)}</p>`;
+  if(cur.err)h+=`<div class="hintbox">${tx(U.bad)}</div>`;
+  if(cur.hint&&!cur.done)h+=`<div class="hintbox">${esc(tx(q.hint))}</div>`;
+  if(cur.done){const ok=cur.res;h+=`<div class="fb ${ok?'ok':'no'}" aria-live="polite"><strong>${ok?tx(U.correct):tx(U.wrong)+' '}${ok?'':`<span class="ansv">${esc(q.ansText)}</span>`}</strong>`;
+    if(cur.justMastered)h+=`<div>${tx(U.masteredNow)}</div>`;
+    h+=ok?`<details><summary>${tx(U.steps)}</summary>${stepsHTML(q.steps)}</details>`:`<div><b>${tx(U.steps)}</b>${stepsHTML(q.steps)}</div>`;h+='</div>'}
+  h+=`<div class="actions">`;
+  if(!cur.done){h+=`<button class="btn primary" data-act="submit" ${q.type==='mc'&&cur.pick==null?'disabled':''}>${tx(U.submit)}</button>`;if(mode.t==='study'&&!cur.hint)h+=`<button class="btn" data-act="hint">${tx(U.hint)}</button>`}
+  else{h+=`<button class="btn primary" data-act="next">${tx(U.next)}</button>`;
+    if(mode.t==='study'&&!cur.res)h+=`<button class="btn" data-act="to-guided">${tx(U.walk)}</button><button class="btn ghost" data-act="to-learn">${tx(U.review)}</button>`;
+    if(mode.t==='study'&&cur.justMastered&&nextUp(cur.id))h+=`<button class="btn" data-act="go-next">${tx(U.goNext)} · ${tx(NAMES[nextUp(cur.id)])}</button>`}
+  return h+'</div>'}
+
+function renderMain(){const m=$('#main');let h='';
+  if(mode.t==='summary'){const res=mode.results;const n=Object.keys(res).length,ok=Object.values(res).filter(Boolean).length;const gaps=ORDER.filter(id=>res[id]===false);
+    h=`<section class="sum"><h3>${tx(U.sumT)}</h3><p>${tx(U.sumB(ok,n))}</p>`+(gaps.length?`<ol class="gaplist">${gaps.map(id=>`<li><span class="code">${id}</span><span>${tx(NAMES[id])}</span><span class="w">${catOf(id).items} ${tx(U.items)}</span></li>`).join('')}</ol>`:`<p>${tx(U.noGaps)}</p>`)+
+      `<p class="help">${tx(U.stage)}</p><div class="actions"><button class="btn primary" data-act="practice-first">${tx(U.practice)}</button></div></section>`;m.innerHTML=h;return}
+  const anyWork=Object.values(S.p).some(p=>p.a>0||p.chk!==null);
+  if(mode.t==='study'&&!anyWork)h+=`<div class="banner"><div><h3>${tx(U.welT)}</h3><p>${tx(U.welB)}</p></div><button class="btn primary" data-act="start-check">${tx(U.start)}</button></div>`;
+  const p=prog(cur.id),c=catOf(cur.id);
+  const top=mode.t==='check'?`<span class="eyebrow">${tx(U.qOf(mode.i+1,mode.queue.length))}</span><button class="btn ghost" data-act="exit-check">${tx(U.exit)}</button>`
+    :`<div class="ttl"><span class="eyebrow"><span class="code">${cur.id}</span>${tx(c.n)}</span><h2>${tx(NAMES[cur.id])}</h2></div>`+(cur.view==='practice'?`<span class="pips" aria-label="${Math.min(p.s,3)} ${tx(U.streak)}">${[0,1,2].map(i=>`<span class="pip ${i<Math.min(p.s,3)?'on':''}"></span>`).join('')} ${tx(U.streak)}</span>`:'');
+  h+=`<section class="card"><div class="card-top">${top}</div>${mode.t==='study'?tabsHTML():''}<div class="paper">${cur.view==='learn'?learnHTML():cur.view==='guided'?guidedHTML():practiceHTML()}</div></section>`;
+  m.innerHTML=h;
+  const inp=$('#ans');if(inp&&!cur.done){inp.addEventListener('input',e=>{cur.val=e.target.value});inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()})}
+  const gin=$('#gans');if(gin&&!cur.gshow){gin.addEventListener('input',e=>{cur.gval=e.target.value});gin.addEventListener('keydown',e=>{if(e.key==='Enter')gCheck()})}}
+function render(){renderChrome();renderMap();renderMain()}
+const focusSoon=sel=>{const el=document.querySelector(sel);if(el)el.focus({preventScroll:true})};
+
+/* ---------- actions ---------- */
+function submit(){const q=cur.q;let ok;
+  if(q.type==='mc'){if(cur.pick==null)return;ok=cur.pick===q.ans}
+  else{const v=parseNum(cur.val||'');if(isNaN(v)){cur.err=true;renderMain();return}ok=Math.abs(v-q.ans)<=(q.tol??.001)}
+  cur.err=false;cur.done=true;cur.res=ok;const p=prog(cur.id);
+  if(mode.t==='check'){p.chk=ok;mode.results[cur.id]=ok}
+  else{p.a++;if(ok){p.c++;p.s++;if(p.s>=3&&!p.m){p.m=true;cur.justMastered=true}}else p.s=0}
+  save();render();focusSoon('[data-act="next"]')}
+function gCheck(){const s=cur.gq.g[cur.gi];let ok;
+  if(s.type==='mc'){if(cur.gpick==null)return;ok=cur.gpick===s.ans}
+  else{const v=parseNum(cur.gval||'');if(isNaN(v)){cur.err=true;renderMain();return}ok=Math.abs(v-s.ans)<=s.tol}
+  cur.err=false;
+  if(ok){cur.glog.push(cur.gt>0);gAdvance()}
+  else{cur.gt++;cur.gpick=null;if(cur.gt>=2)cur.gshow=true;renderMain();focusSoon(cur.gshow?'[data-act="g-cont"]':'#gans')}}
+function gAdvance(){cur.gi++;cur.gt=0;cur.gshow=false;cur.gval='';cur.gpick=null;renderMain();focusSoon('#gans')}
+function goStudy(id,view){mode={t:'study'};openSkill(id,view);render();window.scrollTo({top:0,behavior:'smooth'})}
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.lang){S.lang=t.dataset.lang;save();try{localStorage.setItem('catchup.lang',S.lang)}catch(e){}render();return}
+  if(t.id==='btn-reset'){if(resetArm){clearTimeout(resetArm);resetArm=null;S.p={};save();goStudy(nextUp())}else{resetArm=setTimeout(()=>{resetArm=null;renderChrome()},4000);renderChrome()}return}
+  if(t.id==='btn-check'||t.dataset.act==='start-check'){mode={t:'check',queue:ORDER.slice(),i:0,results:{}};cur={id:ORDER[0]};setView('practice');render();return}
+  if(t.dataset.skill){goStudy(t.dataset.skill);return}
+  if(t.dataset.view){setView(t.dataset.view);render();return}
+  if(t.dataset.choice!=null){cur.pick=+t.dataset.choice;renderMain();return}
+  if(t.dataset.gchoice!=null){cur.gpick=+t.dataset.gchoice;renderMain();return}
+  const a=t.dataset.act;
+  if(a==='submit')submit();
+  else if(a==='hint'){cur.hint=true;renderMain()}
+  else if(a==='ex-step'){cur.exStep++;renderMain()}
+  else if(a==='new-example'){setView('learn');renderMain()}
+  else if(a==='to-guided'){setView('guided');render();focusSoon('#gans')}
+  else if(a==='to-own'){setView('practice');render();focusSoon('#ans')}
+  else if(a==='to-learn'){setView('learn');render()}
+  else if(a==='g-check')gCheck();
+  else if(a==='g-cont'){cur.glog.push(true);gAdvance()}
+  else if(a==='next'){if(mode.t==='check'){mode.i++;if(mode.i>=mode.queue.length){mode={t:'summary',results:mode.results};renderMain();renderMap()}else{cur={id:mode.queue[mode.i]};setView('practice');render()}}else{setView('practice');render();focusSoon('#ans')}}
+  else if(a==='go-next')goStudy(nextUp(cur.id));
+  else if(a==='exit-check'||a==='practice-first')goStudy(nextUp()||ORDER[0]);
+});
+goStudy(nextUp()||ORDER[0]);
+</script>
+</body>
+</html>

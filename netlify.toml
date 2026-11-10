@@ -1,0 +1,21 @@
+# Netlify settings for Edu-SmartAI Catch-Up.
+# Plain HTML: there is no build step. Netlify publishes the repository root as-is.
+
+[build]
+  publish = "."
+
+# Safe defaults for every page.
+# Framing is NOT blocked, so the apps can still be embedded in Google Sites.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# Short, easy-to-type links for teachers, e.g. /math8 → /math/grade-8/
+# Add one line per new app.
+[[redirects]]
+  from = "/math8"
+  to = "/math/grade-8/"
+  status = 301

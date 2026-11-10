@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Edu-SmartAI Catch-Up</title>
+<meta name="description" content="Free bilingual (English/Spanish) TEKS catch-up practice for Texas students, K–12 Math and Language Arts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Same tokens as every Catch-Up app, so the library and the apps read as one product */
+:root{
+  --bg:#eef3f4; --surface:#ffffff; --ink:#132228; --muted:#566870; --line:#d3dee1; --grid:#e4ecee;
+  --accent:#0a6a70; --accent-soft:#dcefef; --on-accent:#ffffff;
+  --marker:#f0b429; --marker-soft:#fdf1cf;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018; color-scheme:dark}
+*{box-sizing:border-box}
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 48px}
+.wrap{max-width:1140px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+button{font:inherit;color:inherit;cursor:pointer}
+a:focus-visible,button:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,5vw,46px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 span{background:linear-gradient(transparent 58%,var(--marker) 58%,var(--marker) 90%,transparent 90%);padding:0 2px}
+.lede{margin:10px 0 0;color:var(--muted);max-width:60ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:720px){.how{grid-template-columns:minmax(0,1fr)}}
+.how div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}
+.how b{display:block;font-family:var(--display);font-size:17px}
+.how p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+.n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--accent);color:var(--on-accent)}
+
+.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+@media (max-width:880px){.subjects{grid-template-columns:minmax(0,1fr)}}
+.subject{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.subject h2{margin:0;font-family:var(--display);font-size:24px;padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.subject h2 small{font-family:var(--body);font-size:13px;font-weight:400;color:var(--muted)}
+.band{padding:14px 18px 18px;display:flex;flex-direction:column;gap:10px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+.band + .band{border-top:1px solid var(--line)}
+.band h3{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--surface);align-self:flex-start;padding:0 4px;margin-left:-4px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;gap:4px;min-height:84px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:var(--ink)}
+.tile .lv{font-family:var(--display);font-weight:800;font-size:20px;line-height:1.1}
+.tile .meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:11px;font-weight:700;border-radius:999px;padding:1px 7px;white-space:nowrap}
+.chip.live{background:var(--accent);color:var(--on-accent)}
+.chip.soon{border:1px solid var(--line);color:var(--muted)}
+.chip.staar{background:var(--marker-soft);color:var(--ink);border:1px solid var(--marker)}
+a.tile{border:2px solid var(--accent)}
+a.tile:hover{background:var(--accent-soft)}
+.tile.off .lv{color:var(--muted)}
+.foot{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.foot p{margin:0;max-width:90ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Edu-SmartAI <span>Catch-Up</span></h1>
+      <p class="lede" id="lede"></p>
+    </div>
+    <div class="seg" role="group" aria-label="Language">
+      <button id="lang-en" data-lang="en">EN</button>
+      <button id="lang-es" data-lang="es">ES</button>
+    </div>
+  </header>
+
+  <section class="how" id="how" aria-label="How it works"></section>
+
+  <section class="subjects" id="subjects"></section>
+
+  <footer class="foot" id="foot"></footer>
+</div>
+
+<script>
+/* ============================================================
+   APPS THAT ARE LIVE
+   When you add a new app folder, add its path here (one line).
+   Paths must match the folder names exactly.
+   ============================================================ */
+const LIVE = [
+  'math/grade-8',
+];
+
+/* Levels shown on the page. STAAR-tested levels get a chip. */
+const LEVELS = {
+  math: {
+    elem:  [['k','K'],['grade-1','1'],['grade-2','2'],['grade-3','3',1],['grade-4','4',1],['grade-5','5',1]],
+    mid:   [['grade-6','6',1],['grade-7','7',1],['grade-8','8',1]],
+    high:  [['algebra-1','Algebra I',1],['geometry','Geometry'],['algebra-2','Algebra II']],
+  },
+  la: {
+    elem:  [['k','K'],['grade-1','1'],['grade-2','2'],['grade-3','3',1],['grade-4','4',1],['grade-5','5',1]],
+    mid:   [['grade-6','6',1],['grade-7','7',1],['grade-8','8',1]],
+    high:  [['english-1','English I',1],['english-2','English II',1],['english-3','English III'],['english-4','English IV']],
+  },
+};
+
+const T = {
+  en: {
+    lede: 'Free, bilingual practice for Texas students who need to catch up on the TEKS. Pick a subject and grade to start.',
+    how: [['Quick check','A short diagnostic finds the skills that need work.'],
+          ['Learn and practice together','Each skill has a lesson, a worked example, and guided steps with hints.'],
+          ['Practice on your own','Unlimited new problems. Three correct in a row means mastered.']],
+    math: 'Math', la: 'Language Arts', laNote: 'Reading & writing',
+    mathNote: 'TEKS-aligned',
+    elem: 'Elementary', mid: 'Middle school', high: 'High school',
+    grade: 'Grade', live: 'Open', soon: 'Coming soon', staar: 'STAAR',
+    foot1: 'Progress is saved only in each student’s own browser. No sign-up, and no student information is collected.',
+    foot2: 'Standards and STAAR information from lead4ward Snapshots (source: Texas Education Agency). Not affiliated with TEA or lead4ward.',
+  },
+  es: {
+    lede: 'Práctica gratuita y bilingüe para estudiantes de Texas que necesitan ponerse al día con los TEKS. Elige una materia y un grado para empezar.',
+    how: [['Diagnóstico rápido','Una prueba corta encuentra las habilidades que necesitan práctica.'],
+          ['Aprende y practica con ayuda','Cada habilidad tiene una lección, un ejemplo resuelto y pasos guiados con pistas.'],
+          ['Practica por tu cuenta','Problemas nuevos sin límite. Tres correctas seguidas significa dominado.']],
+    math: 'Matemáticas', la: 'Lenguaje', laNote: 'Lectura y escritura',
+    mathNote: 'Alineado a los TEKS',
+    elem: 'Primaria', mid: 'Secundaria', high: 'Preparatoria',
+    grade: 'Grado', live: 'Abrir', soon: 'Próximamente', staar: 'STAAR',
+    foot1: 'El progreso se guarda solo en el navegador de cada estudiante. No hay registro y no se recopila información de los estudiantes.',
+    foot2: 'Estándares e información de STAAR tomados de los Snapshots de lead4ward (fuente: Agencia de Educación de Texas). Sin afiliación con TEA ni lead4ward.',
+  },
+};
+
+let lang = 'en';
+try { const s = localStorage.getItem('catchup.lang'); if (s === 'en' || s === 'es') lang = s; } catch (e) {}
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function tile(subject, [slug, label, staar]) {
+  const t = T[lang], path = subject + '/' + slug, live = LIVE.includes(path);
+  const isGrade = /^\d$|^K$/.test(label);
+  const sr = isGrade ? `${t.grade} ${label}` : label;
+  const chips = (live ? `<span class="chip live">${t.live}</span>` : `<span class="chip soon">${t.soon}</span>`) +
+                (staar ? `<span class="chip staar">${t.staar}</span>` : '');
+  const inner = `<span class="lv" aria-label="${esc(sr)}">${esc(label)}</span><span class="meta">${chips}</span>`;
+  return live ? `<a class="tile" href="${path}/">${inner}</a>` : `<div class="tile off" aria-disabled="true">${inner}</div>`;
+}
+
+function render() {
+  const t = T[lang];
+  document.documentElement.lang = lang;
+  document.getElementById('lang-en').setAttribute('aria-pressed', lang === 'en');
+  document.getElementById('lang-es').setAttribute('aria-pressed', lang === 'es');
+  document.getElementById('lede').textContent = t.lede;
+  document.getElementById('how').innerHTML = t.how.map(([b, p], i) =>
+    `<div><span class="n">${i + 1}</span><span><b>${esc(b)}</b><p>${esc(p)}</p></span></div>`).join('');
+  document.getElementById('subjects').innerHTML = ['math', 'la'].map(sub =>
+    `<article class="subject"><h2>${t[sub]} <small>${sub === 'la' ? t.laNote : t.mathNote}</small></h2>` +
+    ['elem', 'mid', 'high'].map(b => `<div class="band"><h3>${t[b]}</h3><div class="tiles">${LEVELS[sub][b].map(l => tile(sub, l)).join('')}</div></div>`).join('') +
+    `</article>`).join('');
+  document.getElementById('foot').innerHTML = `<p>${esc(t.foot1)}</p><p>${esc(t.foot2)}</p>`;
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-lang]'); if (!b) return;
+  lang = b.dataset.lang;
+  try { localStorage.setItem('catchup.lang', lang); } catch (err) {}
+  render();
+});
+render();
+</script>
+</body>
+</html>
