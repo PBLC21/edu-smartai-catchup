@@ -40,8 +40,11 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-be
 .brand h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,40px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .brand h1 span{background:linear-gradient(transparent 58%,var(--marker) 58%, var(--marker) 90%,transparent 90%);padding:0 2px}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
-.home{display:inline-block;margin-bottom:8px;font-size:13px;font-weight:700;color:var(--accent);text-decoration:none}
-.home:hover{text-decoration:underline}
+.home{display:inline-flex;align-items:center;gap:8px;min-height:40px;margin-bottom:12px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;text-decoration:none}
+.home .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
+.home:hover{border-color:var(--accent);background:var(--accent-soft)}
+.home:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+.brand h1 #ttl-lv{background:none;padding:0}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
 .seg button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
@@ -177,8 +180,8 @@ details summary{cursor:pointer;font-weight:700;font-size:14px}
 <div class="wrap">
   <header>
     <div class="brand">
-      <a class="home" href="../../" id="home-link">← All grades</a>
-      <h1>Grade 8 <span>Catch-Up</span></h1>
+      <a class="home" href="../../" id="home-link"><span class="ic" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="home-txt">All grades</span></a>
+      <h1><span id="ttl-lv">Grade 8</span> <span>Catch-Up</span></h1>
       <p id="sub"></p>
     </div>
     <div class="tools">
@@ -199,6 +202,7 @@ details summary{cursor:pointer;font-weight:700;font-size:14px}
 
 <script>
 const LS='catchup.math.grade-8.v1';
+const TTL_EN='Grade 8',TTL_ES='Grado 8';
 let S=null; try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}
 if(!S||typeof S!=='object'||!S.p)S={lang:'en',p:{}};
 try{const gl=localStorage.getItem('catchup.lang');if(gl==='en'||gl==='es')S.lang=gl}catch(e){}
@@ -488,15 +492,15 @@ const U={sub:L('STAAR readiness standards · learn, practice together, then on y
  foot:L('Standards and STAAR item ranges from the lead4ward Grade 8 Math Snapshot (TEA source). Progress is saved in this browser only.','Estándares y rangos de preguntas STAAR tomados del Snapshot de Matemáticas de 8.º grado de lead4ward (fuente: TEA). El progreso se guarda solo en este navegador.')};
 
 /* ---------- lessons: plain-language explanation, bilingual vocabulary, common mistake ---------- */
-const M=s=>({m:s});
+const M=(en,es)=>({m:es?{en,es}:en});
 const LES={
 '8.4B':{idea:[L('In a proportional relationship, y is always the same multiple of x. Its graph is a straight line that goes through the origin (0, 0).','En una relación proporcional, y siempre es el mismo múltiplo de x. Su gráfica es una recta que pasa por el origen (0, 0).'),
   L('The unit rate is how much y grows for every 1 unit of x, like dollars per pound or miles per hour. On the graph, the unit rate is the slope: the line rises by the unit rate each time it moves 1 to the right.','La tasa unitaria es cuánto crece y por cada 1 unidad de x, como dólares por libra o millas por hora. En la gráfica, la tasa unitaria es la pendiente: la recta sube esa cantidad cada vez que avanza 1 a la derecha.'),
-  L('To find it, pick any point (x, y) on the line other than the origin and divide:','Para encontrarla, elige cualquier punto (x, y) de la recta que no sea el origen y divide:'),M('unit rate = y ÷ x')],
+  L('To find it, pick any point (x, y) on the line other than the origin and divide:','Para encontrarla, elige cualquier punto (x, y) de la recta que no sea el origen y divide:'),M('unit rate = y ÷ x','tasa unitaria = y ÷ x')],
   vocab:[['unit rate','tasa unitaria'],['slope','pendiente'],['origin','origen'],['proportional','proporcional']],
   watch:L('Divide y by x, not x by y. The unit rate is "y per one x".','Divide y entre x, no x entre y. La tasa unitaria es "y por cada x".')},
 '8.4C':{idea:[L('The slope, or rate of change, tells how much y changes each time x changes by 1.','La pendiente, o tasa de cambio, dice cuánto cambia y cada vez que x cambia en 1.'),
-  L('From a table, compare two columns:','En una tabla, compara dos columnas:'),M('m = (change in y) ÷ (change in x)'),
+  L('From a table, compare two columns:','En una tabla, compara dos columnas:'),M('m = (change in y) ÷ (change in x)','m = (cambio en y) ÷ (cambio en x)'),
   L('The y-intercept b is the value of y when x = 0. If x = 0 is not in the table, use any point and solve:','La intersección con el eje y, b, es el valor de y cuando x = 0. Si x = 0 no está en la tabla, usa cualquier punto y despeja:'),M('b = y − m · x')],
   vocab:[['rate of change','tasa de cambio'],['slope','pendiente'],['y-intercept','intersección con el eje y'],['table','tabla']],
   watch:L('Check how much x goes up between columns. If x jumps by 2, divide the change in y by 2, not by 1.','Revisa cuánto aumenta x entre columnas. Si x salta de 2 en 2, divide el cambio en y entre 2, no entre 1.')},
@@ -524,18 +528,18 @@ const LES={
   vocab:[['dilation','dilatación'],['scale factor','factor de escala'],['image','imagen'],['center of dilation','centro de dilatación']],
   watch:L('Multiply, don’t add. Adding k to each coordinate is a translation, not a dilation.','Multiplica, no sumes. Sumar k a cada coordenada es una traslación, no una dilatación.')},
 '8.10C':{idea:[L('Each transformation has a coordinate rule. Learn these six:','Cada transformación tiene una regla de coordenadas. Aprende estas seis:'),
-  M('reflect over x-axis: (x, y) → (x, −y)'),M('reflect over y-axis: (x, y) → (−x, y)'),M('rotate 90° counterclockwise: (x, y) → (−y, x)'),M('rotate 180°: (x, y) → (−x, −y)'),M('rotate 270° counterclockwise: (x, y) → (y, −x)'),M('translate a right, b up: (x, y) → (x + a, y + b)'),
+  M('reflect over x-axis: (x, y) → (x, −y)','reflexión sobre el eje x: (x, y) → (x, −y)'),M('reflect over y-axis: (x, y) → (−x, y)','reflexión sobre el eje y: (x, y) → (−x, y)'),M('rotate 90° counterclockwise: (x, y) → (−y, x)','rotación de 90° (sentido contrario): (x, y) → (−y, x)'),M('rotate 180°: (x, y) → (−x, −y)','rotación de 180°: (x, y) → (−x, −y)'),M('rotate 270° counterclockwise: (x, y) → (y, −x)','rotación de 270° (sentido contrario): (x, y) → (y, −x)'),M('translate a right, b up: (x, y) → (x + a, y + b)','traslación a la derecha y b arriba: (x, y) → (x + a, y + b)'),
   L('Read the direction carefully. A 90° clockwise turn is the same as a 270° counterclockwise turn.','Lee la dirección con cuidado. Un giro de 90° en el sentido de las manecillas es igual a uno de 270° en sentido contrario.')],
   vocab:[['reflection','reflexión'],['rotation','rotación'],['translation','traslación'],['counterclockwise','sentido contrario a las manecillas']],
   watch:L('In 90° and 270° rotations the coordinates switch places. Switch first, then fix the sign.','En las rotaciones de 90° y 270° las coordenadas cambian de lugar. Primero cámbialas y luego ajusta el signo.')},
 '8.7A':{idea:[L('Volume is the space inside a solid, measured in cubic units.','El volumen es el espacio dentro de un sólido y se mide en unidades cúbicas.'),
-  M('cylinder: V = πr²h'),M('cone: V = (1/3)πr²h'),M('sphere: V = (4/3)πr³'),
+  M('cylinder: V = πr²h','cilindro: V = πr²h'),M('cone: V = (1/3)πr²h','cono: V = (1/3)πr²h'),M('sphere: V = (4/3)πr³','esfera: V = (4/3)πr³'),
   L('A cone holds exactly one third of a cylinder with the same base and height. All three formulas are on the STAAR reference sheet; the skill is picking the right one and using the radius.','Un cono contiene exactamente un tercio de un cilindro con la misma base y altura. Las tres fórmulas están en la hoja de referencia de STAAR; la habilidad es escoger la correcta y usar el radio.')],
   vocab:[['volume','volumen'],['radius','radio'],['diameter','diámetro'],['cubic units','unidades cúbicas']],
   watch:L('If you are given the diameter, divide by 2 first. Square or cube the radius before multiplying by π.','Si te dan el diámetro, divídelo entre 2 primero. Eleva el radio al cuadrado o al cubo antes de multiplicar por π.')},
 '8.7B':{idea:[L('Surface area is the total area of all the faces of a solid, in square units. Picture unfolding it flat (a net) and adding the areas of the pieces.','El área superficial es el área total de todas las caras de un sólido, en unidades cuadradas. Imagina desdoblarlo (una red) y sumar las áreas de las piezas.'),
-  M('rectangular prism: S = 2(lw + lh + wh)'),
-  L('Lateral area means only the sides, not the top and bottom. For a cylinder, the side unrolls into a rectangle:','El área lateral es solo de los lados, sin la tapa ni la base. En un cilindro, el lado se desenrolla en un rectángulo:'),M('cylinder lateral: S = 2πrh')],
+  M('rectangular prism: S = 2(lw + lh + wh)','prisma rectangular: S = 2(lw + lh + wh)'),
+  L('Lateral area means only the sides, not the top and bottom. For a cylinder, the side unrolls into a rectangle:','El área lateral es solo de los lados, sin la tapa ni la base. En un cilindro, el lado se desenrolla en un rectángulo:'),M('cylinder lateral: S = 2πrh','área lateral del cilindro: S = 2πrh')],
   vocab:[['surface area','área superficial'],['lateral area','área lateral'],['face','cara'],['net','red (desarrollo plano)']],
   watch:L('Lateral area leaves out the bases. Total surface area includes them.','El área lateral no incluye las bases. El área total sí las incluye.')},
 '8.2D':{idea:[L('Real numbers include fractions, decimals, negatives and irrational numbers like π and √2.','Los números reales incluyen fracciones, decimales, negativos y números irracionales como π y √2.'),
@@ -544,7 +548,7 @@ const LES={
   vocab:[['irrational number','número irracional'],['perfect square','cuadrado perfecto'],['square root','raíz cuadrada'],['number line','recta numérica']],
   watch:L('With negatives, a bigger digit means a smaller number: −2.5 is less than −1.2.','Con negativos, un dígito más grande significa un número menor: −2.5 es menor que −1.2.')},
 '8.12D':{idea:[L('Simple interest is earned only on the original amount P:','El interés simple se gana solo sobre la cantidad original P:'),M('I = P · r · t'),
-  L('Compound interest is earned on the original amount plus the interest already earned, so it grows faster:','El interés compuesto se gana sobre la cantidad original más el interés ya ganado, por eso crece más rápido:'),M('A = P(1 + r)ᵗ     interest = A − P'),
+  L('Compound interest is earned on the original amount plus the interest already earned, so it grows faster:','El interés compuesto se gana sobre la cantidad original más el interés ya ganado, por eso crece más rápido:'),M('A = P(1 + r)ᵗ     interest = A − P','A = P(1 + r)ᵗ     interés = A − P'),
   L('Always write the rate as a decimal: 4% = 0.04.','Siempre escribe la tasa como decimal: 4% = 0.04.')],
   vocab:[['principal','capital'],['interest rate','tasa de interés'],['simple interest','interés simple'],['compound interest','interés compuesto']],
   watch:L('A is the total balance, not the interest. Subtract P to get the interest.','A es el saldo total, no el interés. Resta P para obtener el interés.')},
@@ -585,7 +589,7 @@ function openSkill(id,view){cur={id};if(!view){const st=status(id);view=(st==='n
 
 /* ---------- render ---------- */
 const $=s=>document.querySelector(s);
-function renderChrome(){document.documentElement.lang=S.lang;$('#home-link').textContent=S.lang==='es'?'← Todos los grados':'← All grades';$('#sub').textContent=tx(U.sub);
+function renderChrome(){document.documentElement.lang=S.lang;$('#home-txt').textContent=S.lang==='es'?'Todos los grados':'All grades';$('#ttl-lv').textContent=S.lang==='es'?TTL_ES:TTL_EN;$('#sub').textContent=tx(U.sub);
   $('#lang-en').setAttribute('aria-pressed',S.lang==='en');$('#lang-es').setAttribute('aria-pressed',S.lang==='es');
   $('#btn-check').textContent=tx(U.check);$('#btn-reset').textContent=tx(resetArm?U.resetSure:U.reset);$('#btn-reset').classList.toggle('warn',!!resetArm);
   $('#foot').textContent=tx(U.foot)}
@@ -604,7 +608,7 @@ function choicesHTML(list,attr,sel,done,ans,mono){return`<div class="choices">${
 function tabsHTML(){return`<nav class="tabs" aria-label="stages">${[['learn',U.learn],['guided',U.guided],['practice',U.own]].map(([v,l],i)=>`<button data-view="${v}" aria-current="${cur.view===v}"><span class="tn">${i+1}</span>${tx(l)}</button>`).join('')}</nav>`}
 
 function learnHTML(){const les=LES[cur.id],q=cur.ex,n=q.steps.length,all=cur.exStep>=n;
-  let h=`<div class="lesson"><div class="idea">${les.idea.map(x=>x.m?`<div class="formula">${esc(x.m)}</div>`:`<p>${esc(tx(x))}</p>`).join('')}</div>
+  let h=`<div class="lesson"><div class="idea">${les.idea.map(x=>x.m?`<div class="formula">${esc(tx(x.m))}</div>`:`<p>${esc(tx(x))}</p>`).join('')}</div>
     <div class="side"><div class="words"><h4>${tx(U.words)}</h4><dl>${les.vocab.map(([e,s])=>`<div><dt>${esc(S.lang==='en'?e:s)}</dt><dd>${esc(S.lang==='en'?s:e)}</dd></div>`).join('')}</dl></div>
     <div class="watch"><h4>${tx(U.watch)}</h4><p>${esc(tx(les.watch))}</p></div></div></div>`;
   h+=`<div class="example"><h3>${tx(U.example)}</h3>${probHTML(q)}${stepsHTML(q.steps,cur.exStep)}`;

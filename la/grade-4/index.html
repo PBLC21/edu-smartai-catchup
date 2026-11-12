@@ -36,6 +36,11 @@ header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-be
 .brand h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,40px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
 .brand h1 span{background:linear-gradient(transparent 58%,var(--marker) 58%, var(--marker) 90%,transparent 90%);padding:0 2px}
 .brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.home{display:inline-flex;align-items:center;gap:8px;min-height:40px;margin-bottom:12px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;text-decoration:none}
+.home .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
+.home:hover{border-color:var(--accent);background:var(--accent-soft)}
+.home:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+.brand h1 #ttl-lv{background:none;padding:0}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
 .seg button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
@@ -202,7 +207,8 @@ details summary{cursor:pointer;font-weight:700;font-size:14px}
 <div class="wrap">
   <header>
     <div class="brand">
-      <h1>Grade 4 Language Arts <span>Catch-Up</span></h1>
+      <a class="home" href="../../" id="home-link"><span class="ic" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="home-txt">All grades</span></a>
+      <h1><span id="ttl-lv">Grade 4 Language Arts</span> <span>Catch-Up</span></h1>
       <p id="sub"></p>
     </div>
     <div class="tools">
@@ -222,9 +228,11 @@ details summary{cursor:pointer;font-weight:700;font-size:14px}
 </div>
 
 <script>
-const LS='g4lacatchup.v1';
+const LS='catchup.la.grade-4.v1';
+const TTL_EN='Grade 4 Language Arts',TTL_ES='Lenguaje · Grado 4';
 let S=null; try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}
 if(!S||typeof S!=='object'||!S.p)S={lang:'en',p:{}};
+try{const gl=localStorage.getItem('catchup.lang');if(gl==='en'||gl==='es')S.lang=gl}catch(e){}
 function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
 const L=(en,es)=>({en,es});
 const tx=v=>v==null?'':(typeof v==='object'?v[S.lang]:String(v));
@@ -895,7 +903,7 @@ const IRR_ES=[['ir','fue',['fuió','va'],'al museo de ciencias'],['hacer','hizo'
  ['estar','estuvo',['estó','estuve'],'en casa de su abuela toda la semana'],['saber','supo',['sabió','supe'],'la respuesta de inmediato'],['andar','anduvo',['andó','anduve'],'en bicicleta por el parque'],
  ['dormir','durmió',['dormió','duerme'],'en casa de su abuela'],['pedir','pidió',['pedió','pide'],'tacos para la cena'],['leer','leyó',['leió','lee'],'un libro de dinosaurios'],
  ['oír','oyó',['oió','oye'],'un ruido extraño afuera'],['servir','sirvió',['servió','sirve'],'la sopa a sus hermanos'],['construir','construyó',['construió','construye'],'un fuerte con cajas']];
-GES['4.11Dii']=()=>{const[b,p,w,rest]=pick(IRR_ES),cl=pick(['Ayer','El fin de semana pasado','Anoche','El sábado','Hace dos días','El verano pasado']),sub=pick(['Carlos','mi hermana','la maestra','mi primo','Ana']);
+const GES_IRR=()=>{const[b,p,w,rest]=pick(IRR_ES),cl=pick(['Ayer','El fin de semana pasado','Anoche','El sábado','Hace dos días','El verano pasado']),sub=pick(['Carlos','mi hermana','la maestra','mi primo','Ana']);
   const sent=`${cl}, ${sub} ${p} ${rest}.`,typed=!/[áéíóú]/.test(p)&&Math.random()<.5;const m=mc(p,[w[0],w[1],b]);
   const cm=mc(cl,[cap(sub),rest.split(' ').slice(0,3).join(' ')]);const tm=mc('pretérito (pasado)',['presente','futuro']);
   const hint=`Busca la pista de tiempo y piensa: ¿cómo se dice "${b}" en pasado para ${sub}?`;
@@ -906,6 +914,31 @@ GES['4.11Dii']=()=>{const[b,p,w,rest]=pick(IRR_ES),cl=pick(['Ayer','El fin de se
   const steps=[`"${cl}" te indica que la acción está en pasado.`,`"${b}" es un verbo irregular. Para ${sub}, el pretérito es "${p}", no "${w[0]}".`,{m:sent}];
   if(typed)return{type:'txt',acc:[p],text:'Escribe el pretérito del verbo entre paréntesis.',disp:draft(esc(`${cl}, ${sub} (${b}) _____ ${rest}.`)),ansText:p,hint,g,steps};
   return{type:'mc',text:'¿Qué verbo completa correctamente la oración?',disp:draft(esc(`${cl}, ${sub} _____ ${rest}.`)),choices:m.choices,ans:m.ans,ansText:p,hint,g,steps}};
+
+/* SLAR 4.11D(ii) verb tenses + 4.2B(iv) accents when conjugating */
+const TV4=[['jugar','jugó','jugaba','juega','jugará','jugaría','fútbol en el parque'],['comer','comió','comía','come','comerá','comería','tacos en la cena'],
+ ['escribir','escribió','escribía','escribe','escribirá','escribiría','cartas a su abuela'],['leer','leyó','leía','lee','leerá','leería','libros de aventuras'],
+ ['nadar','nadó','nadaba','nada','nadará','nadaría','en el lago'],['visitar','visitó','visitaba','visita','visitará','visitaría','a sus primos los domingos'],
+ ['caminar','caminó','caminaba','camina','caminará','caminaría','al parque con su perro'],
+ ['dibujar','dibujó','dibujaba','dibuja','dibujará','dibujaría','animales en su cuaderno'],['correr','corrió','corría','corre','correrá','correría','en el parque']];
+const TK4=['pret','imp','pres','fut','cond'];
+const TN4={pret:'pretérito',imp:'copretérito (imperfecto)',pres:'presente',fut:'futuro',cond:'pospretérito (condicional)'};
+const TW4={pret:'Una acción que pasó y terminó en un momento del pasado.',imp:'Algo que pasaba muchas veces o era costumbre en el pasado.',pres:'Algo que pasa ahora o se repite hoy en día.',fut:'Algo que todavía no pasa, pero va a pasar.',cond:'Algo que pasaría si se cumpliera una condición.'};
+const TC4={pret:['Ayer','La semana pasada','Anoche'],imp:['Cuando era chica','Cuando vivía en Laredo','Antes, todas las tardes'],pres:['Todos los días','Ahora','Cada sábado'],fut:['Mañana','La próxima semana','El próximo verano'],cond:['Si tuviera tiempo','Si no lloviera','Si pudiera']};
+const noAcc=w=>w.normalize('NFD').replace(/́/g,'').normalize('NFC');
+GES['4.11Dii']=()=>{if(Math.random()<.35)return GES_IRR();
+  const V=pick(TV4),t=pick(TK4),i=TK4.indexOf(t),right=V[i+1],rest=V[6],cl=pick(TC4[t]),sub=pick(['Ana','mi prima','la maestra','mi tía']);
+  const others=shuf(TK4.filter(k=>k!==t)).map(k=>V[TK4.indexOf(k)+1]);const acc=/[áéíóú]/.test(right);
+  const m=mc(right,acc?[noAcc(right),others[0],others[1]]:others.slice(0,3));
+  const tm=mc(TN4[t],shuf(TK4.filter(k=>k!==t)).slice(0,2).map(k=>TN4[k])),cm=mc(cl,[cap(sub),rest.split(' ').slice(0,2).join(' ')]);
+  const am=mc(acc?'Sí, lleva tilde.':'No, no lleva tilde.',[acc?'No, no lleva tilde.':'Sí, lleva tilde.']);
+  const g=[S1('¿Qué palabras te dicen cuándo pasa la acción?',cm.ans,'Mira el principio de la oración.',{choices:cm.choices}),
+    S1(`"${cl}" es una pista. ¿Qué tiempo verbal necesitas?`,tm.ans,TW4[t],{choices:tm.choices}),
+    S1(`¿La forma de "${V[0]}" en ${TN4[t]} lleva tilde?`,am.ans,'El pretérito (jugó), el copretérito de -er/-ir (comía), el futuro (jugará) y el pospretérito (jugaría) llevan tilde.',{choices:am.choices}),
+    S1('¿Qué forma completa la oración?',m.ans,TW4[t],{choices:m.choices})];
+  return{type:'mc',text:'¿Qué verbo completa correctamente la oración?',disp:draft(esc(`${cl}, ${sub} _____ ${rest}.`)),choices:m.choices,ans:m.ans,ansText:right,
+    hint:'Busca la pista de tiempo al principio de la oración, escoge el tiempo verbal y revisa la tilde.',g,
+    steps:[`"${cl}" → ${TN4[t]}. ${TW4[t]}`,acc?`"${right}" lleva tilde.`:`"${right}" no lleva tilde.`,{m:`${cl}, ${sub} ${right} ${rest}.`}]}};
 
 const CP_ES=[['Mi hermana','lavó los platos','barrió el piso de la cocina',0],['El gatito','trepó por las cortinas','tiró una maceta',0],['Nuestra clase','sembró un árbol','pintó un mural junto al gimnasio',0],
  ['El abuelo','arregló la cerca','pintó el cobertizo',0],['El viento fuerte','sacudió las ventanas','meció el viejo roble',0],['Mateo','abrió la caja','se quedó boquiabierto con la sorpresa',1]];
@@ -990,7 +1023,7 @@ const CATS=[
 const NAMES={'4.6F':L('Inferences & text evidence','Inferencias y evidencia'),'4.6G':L('Key ideas & central idea','Ideas clave e idea central'),'4.3B':L('Context clues','Pistas de contexto'),
  '4.7D':L('Summarize','Resumir'),'4.6H':L('Synthesize paired texts','Sintetizar textos pareados'),'4.8B':L('Characters: interactions & changes','Personajes: interacciones y cambios'),
  '4.8C':L('Plot: climax & resolution','Trama: clímax y resolución'),'4.10A':L("Author's purpose & message",'Propósito y mensaje del autor'),'4.9E':L('Claims & facts in arguments','Afirmaciones y datos en argumentos'),
- '4.11Di':L('Complete sentences & agreement','Oraciones completas y concordancia'),'4.11Dii':L('Irregular past-tense verbs','Verbos irregulares en pasado'),'4.11C':L('Revise: combine, connect, support','Revisar: combinar, conectar, apoyar'),
+ '4.11Di':L('Complete sentences & agreement','Oraciones completas y concordancia'),'4.11Dii':L('Irregular past-tense verbs','Tiempos verbales y acentos'),'4.11C':L('Revise: combine, connect, support','Revisar: combinar, conectar, apoyar'),
  '4.2B':L('Spelling: homophones & suffixes','Ortografía: homófonos y acentos')};
 const ORDER=CATS.flatMap(c=>c.sk);const catOf=id=>CATS.find(c=>c.sk.includes(id));
 
@@ -1085,12 +1118,12 @@ const LES_ES={
   'Un fragmento es un pedazo de oración, como "Porque el autobús llegó tarde." Únelo a una oración completa.'],
   vocab:[['subject','sujeto'],['verb','verbo'],['agreement','concordancia'],['fragment','fragmento']],
   watch:'No hagas caso de la frase entre el sujeto y el verbo. En "La caja de libros viejos está...", el sujeto es caja, no libros.'},
-'4.11Dii':{idea:['Muchos verbos forman el pretérito de manera regular: caminar → caminó, comer → comió. Los verbos irregulares cambian su raíz, así que hay que aprenderlos.',
-  M('hacer → hizo    tener → tuvo    poner → puso\ntraer → trajo   decir → dijo    andar → anduvo'),
-  'Palabras como ayer, anoche o hace dos días son pistas de tiempo que te dicen que uses el pretérito.',
-  'Fíjate en la persona: yo hice, él hizo. Y no olvides los acentos: durmió, pidió, leyó.'],
-  vocab:[['past tense','pretérito'],['irregular verb','verbo irregular'],['time clue','pista de tiempo'],['present tense','presente']],
-  watch:'No uses la terminación regular en un verbo irregular: "hació", "andó" y "traió" no existen.'},
+'4.11Dii':{idea:['El tiempo verbal dice cuándo pasa una acción. Las pistas de tiempo te ayudan a escoger el correcto.',
+  M('pretérito:      Ayer, Ana jugó en el parque.\ncopretérito:    Cuando era chica, Ana jugaba en el parque.\npresente:       Todos los días, Ana juega en el parque.\nfuturo:         Mañana, Ana jugará en el parque.\npospretérito:   Si pudiera, Ana jugaría en el parque.'),
+  'Muchas de estas formas llevan tilde: jugó, comía, jugará, jugaría. Las formas en -aba (jugaba) no llevan tilde.',
+  'Algunos verbos son irregulares en pretérito y cambian su raíz: hacer → hizo, tener → tuvo, traer → trajo.'],
+  vocab:[['past tense','pretérito'],['imperfect','copretérito'],['future tense','futuro'],['conditional','pospretérito']],
+  watch:'Lee la pista de tiempo antes de escoger. "Ayer" pide pretérito; "Cuando era chica" pide copretérito; "Si pudiera" pide pospretérito.'},
 '4.11C':{idea:['Revisar hace que la escritura sea más clara. En STAAR, escoges el mejor cambio para el borrador de un estudiante.',
   M('Combinar:  Mía corrió. Mía saltó. → Mía corrió y saltó.\nConectar:  Sin embargo, / Por ejemplo, / Como resultado, / Después,'),
   'Combina oraciones cortas que repiten el mismo sujeto o la misma acción. Usa transiciones para mostrar cómo se conectan las ideas. Deja solo los detalles que apoyan la idea principal.'],
@@ -1128,7 +1161,7 @@ function openSkill(id,view){cur={id};if(!view){const st=status(id);view=(st==='n
 
 /* ---------- render ---------- */
 const $=s=>document.querySelector(s);
-function renderChrome(){document.documentElement.lang=S.lang;$('#sub').textContent=tx(U.sub);
+function renderChrome(){document.documentElement.lang=S.lang;$('#home-txt').textContent=S.lang==='es'?'Todos los grados':'All grades';$('#ttl-lv').textContent=S.lang==='es'?TTL_ES:TTL_EN;$('#sub').textContent=tx(U.sub);
   $('#lang-en').setAttribute('aria-pressed',S.lang==='en');$('#lang-es').setAttribute('aria-pressed',S.lang==='es');
   $('#btn-check').textContent=tx(U.check);$('#btn-reset').textContent=tx(resetArm?U.resetSure:U.reset);$('#btn-reset').classList.toggle('warn',!!resetArm);
   $('#foot').textContent=tx(U.foot)}
@@ -1222,7 +1255,7 @@ function gCheck(){const s=cur.gq.g[cur.gi];let ok;
 function gAdvance(){cur.gi++;cur.gt=0;cur.gshow=false;cur.gval='';cur.gpick=null;renderMain();focusSoon('#gans')}
 function goStudy(id,view){mode={t:'study'};openSkill(id,view);render();window.scrollTo({top:0,behavior:'smooth'})}
 document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
-  if(t.dataset.lang){S.lang=t.dataset.lang;save();if(cur&&GRAM.includes(cur.id)&&mode.t!=='summary'&&!(cur.view==='practice'&&cur.done))setView(cur.view);render();return}
+  if(t.dataset.lang){S.lang=t.dataset.lang;save();try{localStorage.setItem('catchup.lang',S.lang)}catch(e){}if(cur&&GRAM.includes(cur.id)&&mode.t!=='summary'&&!(cur.view==='practice'&&cur.done))setView(cur.view);render();return}
   if(t.id==='btn-reset'){if(resetArm){clearTimeout(resetArm);resetArm=null;S.p={};save();goStudy(nextUp())}else{resetArm=setTimeout(()=>{resetArm=null;renderChrome()},4000);renderChrome()}return}
   if(t.id==='btn-check'||t.dataset.act==='start-check'){mode={t:'check',queue:ORDER.slice(),i:0,results:{}};cur={id:ORDER[0]};setView('practice');render();return}
   if(t.dataset.skill){goStudy(t.dataset.skill);return}

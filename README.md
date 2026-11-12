@@ -17,7 +17,10 @@ Every app follows the same template and design:
 
 | Subject | Level | Link | Status |
 |---|---|---|---|
+| Math | Grade 3 | [/math/grade-3/](https://edu-smartai-catchup.netlify.app/math/grade-3/) | Live |
 | Math | Grade 8 | [/math/grade-8/](https://edu-smartai-catchup.netlify.app/math/grade-8/) | Live |
+| Language Arts | Grade 3 | [/la/grade-3/](https://edu-smartai-catchup.netlify.app/la/grade-3/) | Live |
+| Language Arts | Grade 4 | [/la/grade-4/](https://edu-smartai-catchup.netlify.app/la/grade-4/) | Live |
 
 ## Folder structure
 

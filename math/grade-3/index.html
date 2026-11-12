@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grade 3 Math Catch-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500&display=swap">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: a working notebook — skill map in the margin, one problem on graph paper in the main column */
+:root{
+  --bg:#eef3f4; --surface:#ffffff; --ink:#132228; --muted:#566870; --line:#d3dee1; --grid:#e4ecee;
+  --accent:#0a6a70; --accent-soft:#dcefef; --on-accent:#ffffff;
+  --marker:#f0b429; --marker-soft:#fdf1cf;
+  --good:#2b7d47; --good-soft:#dff0e4; --bad:#b63c28; --bad-soft:#f8e1dc;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018;
+  --good:#6fcf8f; --good-soft:#173a25; --bad:#ff8f7a; --bad-soft:#40211b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e171a; --surface:#152227; --ink:#e3ecee; --muted:#93a6ad; --line:#26383e; --grid:#1d2d32;
+  --accent:#4cc3c4; --accent-soft:#163a3d; --on-accent:#08201f;
+  --marker:#f3c14f; --marker-soft:#3a3018;
+  --good:#6fcf8f; --good-soft:#173a25; --bad:#ff8f7a; --bad-soft:#40211b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1140px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px}
+.brand h1{font-family:var(--display);font-weight:800;font-size:clamp(28px,4.4vw,40px);line-height:1;margin:0;letter-spacing:-.02em;text-wrap:balance}
+.brand h1 span{background:linear-gradient(transparent 58%,var(--marker) 58%, var(--marker) 90%,transparent 90%);padding:0 2px}
+.brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
+.home{display:inline-flex;align-items:center;gap:8px;min-height:40px;margin-bottom:12px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font-weight:700;font-size:14px;text-decoration:none}
+.home .ic{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
+.home:hover{border-color:var(--accent);background:var(--accent-soft)}
+.home:focus-visible{outline:3px solid var(--marker);outline-offset:2px}
+.brand h1 #ttl-lv{background:none;padding:0}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;font-size:13px;font-weight:700;letter-spacing:.04em}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;font-weight:700;font-size:14px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ghost{background:none}
+.btn.warn{border-color:var(--bad);color:var(--bad)}
+.btn:disabled{opacity:.45;cursor:default}
+
+.layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:880px){.layout{grid-template-columns:minmax(0,1fr)} .map{order:2}}
+
+/* Skill map */
+.map{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.map h2{font-family:var(--display);font-size:18px;margin:0}
+.map .note{margin:-8px 0 0;font-size:13px;color:var(--muted)}
+.cat{display:flex;flex-direction:column;gap:4px}
+.cat-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;padding-bottom:2px;border-bottom:1px solid var(--line)}
+.cat-h b{color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sk{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:0;background:none;padding:7px 6px;border-radius:8px;width:100%}
+.sk:hover{background:var(--grid)}
+.sk[aria-current="true"]{background:var(--accent-soft)}
+.code{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.sk .nm{font-size:14px;line-height:1.25}
+.sk .nx{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;background:var(--marker);color:#2a2005;border-radius:4px;padding:0 5px;vertical-align:1px}
+.pill{font-size:11px;font-weight:700;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.st-new{color:var(--muted);border:1px solid var(--line)}
+.st-working{background:var(--accent-soft);color:var(--accent)}
+.st-gap{background:var(--bad-soft);color:var(--bad)}
+.st-ok{background:var(--marker-soft);color:var(--ink)}
+.st-mastered{background:var(--good-soft);color:var(--good)}
+
+/* Main */
+.main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.banner{background:var(--marker-soft);border:1px solid var(--marker);border-radius:14px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;justify-content:space-between}
+.banner h3{margin:0;font-family:var(--display);font-size:18px}
+.banner p{margin:2px 0 0;font-size:14px;max-width:56ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;padding:14px 20px;border-bottom:1px solid var(--line);align-items:center}
+.eyebrow{font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.eyebrow .code{font-size:13px;margin-right:6px}
+.pips{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.pip{width:12px;height:12px;border-radius:50%;border:2px solid var(--accent)}
+.pip.on{background:var(--accent)}
+.paper{padding:22px 20px 24px;display:flex;flex-direction:column;gap:18px;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px}
+.qtext{font-size:clamp(17px,2.2vw,20px);line-height:1.5;max-width:62ch;margin:0;background:var(--surface);box-shadow:0 0 0 6px var(--surface)}
+.expr{font-family:var(--mono);font-size:clamp(18px,2.6vw,24px);background:var(--surface);display:inline-block;padding:8px 14px;border:1px solid var(--line);border-radius:8px;overflow-x:auto;max-width:100%}
+.vis{overflow-x:auto;max-width:100%}
+.fig{max-width:100%;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:block}
+.fig .on{fill:var(--marker);stroke:var(--ink);stroke-width:1.5}
+.fig .off{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.fig .cell{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1}
+.fig .ink{stroke:var(--ink);stroke-width:2}
+.fig .gl{stroke:var(--grid);stroke-width:1}
+.fig .bar{fill:var(--accent)}
+.fig .dotf{fill:var(--accent)}
+.fig .dotm{fill:var(--marker);stroke:var(--ink);stroke-width:1.5}
+.fig .poly{fill:var(--accent-soft);stroke:var(--ink);stroke-width:2}
+.fig .solid{fill:var(--accent-soft);stroke:var(--ink);stroke-width:2;stroke-linejoin:round}
+.fig .hid{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.fig .t{fill:var(--ink);font:14px var(--body)}
+.fig .tb{fill:var(--ink);font:700 14px var(--mono)}
+.fig .tm{fill:var(--muted);font:12px var(--body)}
+.vis .expr{margin-bottom:10px}
+.vis{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+table.tb.picto td{text-align:left;letter-spacing:4px;font-family:var(--body)}
+table.tb.picto caption{font-weight:700;padding-bottom:6px;text-align:left}
+.ico{color:var(--marker);-webkit-text-stroke:1px var(--ink);font-size:20px}
+.keyline{margin:0;font-size:15px}
+.plot{width:300px;max-width:100%;height:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:block}
+.plot .gl{stroke:var(--grid);stroke-width:1}
+.plot .ax{stroke:var(--muted);stroke-width:1.5}
+.plot .lab{fill:var(--muted);font:11px var(--body)}
+.plot .tl{fill:var(--muted);font:700 11px var(--body)}
+.plot .ln{stroke:var(--accent);stroke-width:2.5;fill:none}
+.plot .pt{fill:var(--marker);stroke:var(--ink);stroke-width:1.5}
+.plot .dot{fill:var(--accent);opacity:.75}
+.plot .pl{fill:var(--ink);font:700 12px var(--mono)}
+table.tb{border-collapse:collapse;background:var(--surface);font-family:var(--mono);font-variant-numeric:tabular-nums}
+table.tb th,table.tb td{border:1px solid var(--line);padding:6px 14px;text-align:center}
+table.tb th{background:var(--accent-soft);color:var(--accent)}
+.answer{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.answer input{font:500 20px var(--mono);width:min(220px,100%);padding:10px 12px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+.answer input:focus{border-color:var(--accent);outline:none}
+.help{font-size:13px;color:var(--muted);margin:-8px 0 0}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.choice{text-align:left;padding:12px 14px;border:2px solid var(--line);background:var(--surface);border-radius:10px;font-family:var(--mono);font-size:16px;min-width:0;overflow-wrap:anywhere}
+.choice.txt{font-family:var(--body)}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice.sel{border-color:var(--accent);background:var(--accent-soft)}
+.choice.right{border-color:var(--good);background:var(--good-soft)}
+.choice.wrongpick{border-color:var(--bad);background:var(--bad-soft)}
+.choice:disabled{cursor:default}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.hintbox{background:var(--marker-soft);border-left:4px solid var(--marker);padding:10px 14px;border-radius:0 8px 8px 0;font-size:15px;max-width:62ch}
+.fb{border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.fb.ok{background:var(--good-soft)} .fb.no{background:var(--bad-soft)}
+.fb strong{font-family:var(--display);font-size:18px}
+.fb.ok strong{color:var(--good)} .fb.no strong{color:var(--bad)}
+.fb .ansv{font-family:var(--mono)}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15px}
+.steps li{padding-left:2px}
+.steps .m{font-family:var(--mono)}
+details summary{cursor:pointer;font-weight:700;font-size:14px}
+.sum{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.sum h3{margin:0;font-family:var(--display);font-size:22px}
+.sum p{margin:0;max-width:60ch}
+.gaplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.gaplist li{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+.gaplist .w{font-size:12px;color:var(--muted);white-space:nowrap}
+
+.ttl h2{font-family:var(--display);font-size:clamp(20px,2.6vw,26px);margin:2px 0 0;line-height:1.15}
+.tabs{display:flex;gap:4px;padding:8px 12px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:10px 12px;font-weight:700;font-size:14px;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap;display:flex;gap:8px;align-items:center}
+.tabs button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tabs .tn{width:22px;height:22px;border-radius:50%;display:inline-grid;place-items:center;font-size:12px;border:2px solid currentColor}
+.tabs button[aria-current="true"] .tn{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lesson{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:16px;align-items:start}
+@media (max-width:760px){.lesson{grid-template-columns:minmax(0,1fr)}}
+.idea{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.idea p{margin:0;font-size:17px;max-width:62ch}
+.formula{font-family:var(--mono);font-size:16px;background:var(--accent-soft);color:var(--ink);border-radius:8px;padding:8px 12px;overflow-x:auto;white-space:pre}
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+.side h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.words,.watch{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.watch{border-color:var(--marker);background:var(--marker-soft)}
+.watch p{margin:0;font-size:15px}
+.words dl{margin:0;display:flex;flex-direction:column;gap:6px}
+.words dt{font-weight:700;font-size:15px}
+.words dd{margin:0;font-size:13px;color:var(--muted);font-style:italic}
+.example{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.example h3{margin:0;font-family:var(--display);font-size:18px}
+.example .qtext{box-shadow:none}
+.exans{margin:0;font-size:16px}
+.m{font-family:var(--mono)}
+.gsteps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.gs{display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.gs p{margin:0}
+.gs.now{border:2px solid var(--accent)}
+.gs .gbody{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gp{font-size:17px;max-width:62ch}
+.gn{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;background:var(--accent);color:var(--on-accent)}
+.gn.ok{background:var(--good);color:var(--surface)}
+.gn.help{background:var(--marker);color:#2a2005}
+.gs.done p{color:var(--muted);font-size:14px}
+.gs.done .ga{color:var(--ink);font-size:16px;font-weight:500}
+.foot{font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.fb,.hintbox{animation:rise .18s ease-out}@keyframes rise{from{transform:translateY(4px);opacity:.6}to{transform:none;opacity:1}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <a class="home" href="../../" id="home-link"><span class="ic" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 2.5 4 7l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span id="home-txt">All grades</span></a>
+      <h1><span id="ttl-lv">Grade 3 Math</span> <span>Catch-Up</span></h1>
+      <p id="sub"></p>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Language">
+        <button id="lang-en" data-lang="en">EN</button>
+        <button id="lang-es" data-lang="es">ES</button>
+      </div>
+      <button class="btn" id="btn-check"></button>
+      <button class="btn ghost" id="btn-reset"></button>
+    </div>
+  </header>
+  <div class="layout">
+    <aside class="map" id="map"></aside>
+    <main class="main" id="main"></main>
+  </div>
+  <p class="foot" id="foot"></p>
+</div>
+
+<script>
+const LS='catchup.math.grade-3.v1';
+const TTL_EN='Grade 3 Math',TTL_ES='Matemáticas · Grado 3';
+let S=null; try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}
+if(!S||typeof S!=='object'||!S.p)S={lang:'en',p:{}};
+try{const gl=localStorage.getItem('catchup.lang');if(gl==='en'||gl==='es')S.lang=gl}catch(e){}
+function save(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
+const L=(en,es)=>({en,es});
+const tx=v=>v==null?'':(typeof v==='object'?v[S.lang]:String(v));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- helpers ---------- */
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const nz=(a,b)=>{let v;do v=ri(a,b);while(v===0);return v};
+const r2=n=>Math.round(n*100)/100;
+const fm=n=>String(r2(n)).replace('-','−');
+const f2=n=>n.toFixed(2).replace('-','−');
+const money=n=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pt=(x,y)=>`(${fm(x)}, ${fm(y)})`;
+function lin(m,b){let s=m===0?'':m===1?'x':m===-1?'−x':fm(m)+'x';
+  if(b!==0){s=s?s+(b<0?' − ':' + ')+fm(Math.abs(b)):fm(b)}else if(!s)s='0';return s}
+function mc(correct,others,n=4){const key=v=>JSON.stringify(v);const seen=new Set([key(correct)]);const list=[correct];
+  for(const o of others){if(list.length>=n)break;const k=key(o);if(!seen.has(k)){seen.add(k);list.push(o)}}
+  const sh=shuf(list);return{choices:sh,ans:sh.indexOf(correct)}}
+function parseNum(s){s=String(s).trim().replace(/[−–]/g,'-').replace(/[$,\s]/g,'').replace(/^[a-z]=/i,'');
+  let m=s.match(/^(-?\d*\.?\d+)\/(-?\d*\.?\d+)$/);if(m)return +m[1]/+m[2];
+  return /^-?\d*\.?\d+$/.test(s)?parseFloat(s):NaN}
+/* one guided step: numeric answer, or multiple choice when o.choices is given (ans = index) */
+const S1=(p,ans,h,o={})=>({p,ans,h,type:o.choices?'mc':'num',choices:o.choices,tol:o.tol??.001,at:o.at??(o.choices?o.choices[ans]:fm(ans)),mono:o.mono});
+const AND=(a,b)=>L(`${a} and ${b}`,`${a} y ${b}`);
+function nice(r){const p=Math.pow(10,Math.floor(Math.log10(r)));const f=r/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p}
+
+const fmtN=n=>r2(n).toLocaleString('en-US',{maximumFractionDigits:2});
+const N1=(p,ans,h,o={})=>S1(p,ans,h,Object.assign({at:fmtN(ans)},o));
+const J=(...p)=>L(p.map(x=>typeof x==='object'?x.en:x).join(''),p.map(x=>typeof x==='object'?x.es:x).join(''));
+/* ---------- figures for Grade 3 (inline SVG, colors from theme tokens) ---------- */
+const svgW=(w,h,body,aria)=>`<svg class="fig" viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${esc(aria||'figure')}">${body}</svg>`;
+const tN=n=>n.toLocaleString('en-US');
+function fracBar(n,d,label,w=300){const bw=w-70,h=36,x0=60;let s='';for(let i=0;i<d;i++)s+=`<rect class="${i<n?'on':'off'}" x="${x0+i*bw/d}" y="6" width="${bw/d}" height="${h}"/>`;
+  return `<g>${s}<text class="t" x="8" y="${6+h/2+5}">${esc(label||'')}</text></g>`}
+function fracBars(rows,aria){const H=rows.length*48+6;return svgW(300,H,rows.map((r,i)=>`<g transform="translate(0,${i*48})">${fracBar(r[0],r[1],r[2])}</g>`).join(''),aria)}
+function numLine(d,pt,aria){const W=320,x0=24,x1=W-24,y=40;let s=`<line class="ink" x1="${x0}" y1="${y}" x2="${x1}" y2="${y}"/>`;
+  for(let i=0;i<=d;i++){const x=x0+(x1-x0)*i/d;s+=`<line class="ink" x1="${x}" y1="${y-8}" x2="${x}" y2="${y+8}"/>`}
+  s+=`<text class="t" x="${x0}" y="${y+28}" text-anchor="middle">0</text><text class="t" x="${x1}" y="${y+28}" text-anchor="middle">1</text>`;
+  if(pt!=null)s+=`<circle class="dotm" cx="${x0+(x1-x0)*pt/d}" cy="${y}" r="7"/><text class="tb" x="${x0+(x1-x0)*pt/d}" y="${y-16}" text-anchor="middle">P</text>`;
+  return svgW(W,80,s,aria)}
+function arrayFig(r,c){const g=26,W=c*g+20,H=r*g+20;let s='';for(let i=0;i<r;i++)for(let j=0;j<c;j++)s+=`<circle class="dotf" cx="${10+g/2+j*g}" cy="${10+g/2+i*g}" r="8"/>`;return svgW(W,H,s,`array of ${r} rows and ${c} columns`)}
+function strip(n,total,partLabel){const W=320,bw=(W-20)/n;let s='';for(let i=0;i<n;i++)s+=`<rect class="off" x="${10+i*bw}" y="34" width="${bw}" height="34"/><text class="tb" x="${10+i*bw+bw/2}" y="56" text-anchor="middle">${esc(partLabel)}</text>`;
+  s+=`<path class="ink" fill="none" d="M10 26 V18 H${W-10} V26"/><text class="tb" x="${W/2}" y="13" text-anchor="middle">${esc(total)}</text>`;return svgW(W,76,s,'strip diagram')}
+function gridRect(r,c){const g=24,W=c*g+20,H=r*g+20;let s='';for(let i=0;i<r;i++)for(let j=0;j<c;j++)s+=`<rect class="cell" x="${10+j*g}" y="${10+i*g}" width="${g}" height="${g}"/>`;return svgW(W,H,s,`rectangle ${r} by ${c} unit squares`)}
+const SHAPES={rect:[[20,30],[180,30],[180,140],[20,140]],tri:[[140,20],[260,150],[20,150]],trap:[[80,30],[200,30],[260,140],[20,140]],
+ pent:[[140,15],[255,80],[215,160],[65,160],[25,80]],hex:[[80,20],[200,20],[260,90],[200,160],[80,160],[20,90]],lshape:[[30,20],[130,20],[130,90],[250,90],[250,160],[30,160]]};
+function polyFig(kind,labels){const P=SHAPES[kind];const cx=P.reduce((a,p)=>a+p[0],0)/P.length,cy=P.reduce((a,p)=>a+p[1],0)/P.length;let s=`<polygon class="poly" points="${P.map(p=>p.join(',')).join(' ')}"/>`;
+  P.forEach((p,i)=>{const q=P[(i+1)%P.length];if(labels[i]==null)return;let mx=(p[0]+q[0])/2,my=(p[1]+q[1])/2;const ex=q[0]-p[0],ey=q[1]-p[1],el=Math.hypot(ex,ey);let nx=ey/el,ny=-ex/el;if(nx*(mx-cx)+ny*(my-cy)<0){nx=-nx;ny=-ny}
+    const anc=Math.abs(nx)>.6?(nx>0?'start':'end'):'middle';mx+=nx*10;my+=ny*14+5;
+    s+=`<text class="tb" x="${mx}" y="${my}" text-anchor="${anc}">${esc(labels[i])}</text>`});return svgW(280,180,s,'polygon with side lengths')}
+function barGraph(cats,vals,scale,title,yT){const W=320,H=220,L0=40,B=180,T=24,max=Math.max(...vals);const top=Math.ceil((max+1)/scale)*scale;const sy=v=>B-(v/top)*(B-T);let s='';
+  for(let v=0;v<=top;v+=scale)s+=`<line class="gl" x1="${L0}" y1="${sy(v)}" x2="${W-8}" y2="${sy(v)}"/><text class="tm" x="${L0-6}" y="${sy(v)+4}" text-anchor="end">${v}</text>`;
+  const bw=(W-L0-16)/cats.length;cats.forEach((c,i)=>{s+=`<rect class="bar" x="${L0+8+i*bw+bw*.15}" y="${sy(vals[i])}" width="${bw*.7}" height="${B-sy(vals[i])}"/><text class="t" x="${L0+8+i*bw+bw/2}" y="${B+18}" text-anchor="middle">${esc(c)}</text>`});
+  s+=`<line class="ink" x1="${L0}" y1="${B}" x2="${W-8}" y2="${B}"/><line class="ink" x1="${L0}" y1="${T-6}" x2="${L0}" y2="${B}"/><text class="tb" x="${W/2}" y="14" text-anchor="middle">${esc(title)}</text>`;
+  return svgW(W,H,s,title)}
+function pictoHTML(cats,vals,key,title,keyTxt){return `<table class="tb picto"><caption>${esc(title)}</caption>${cats.map((c,i)=>`<tr><th>${esc(c)}</th><td>${'<span class="ico">★</span>'.repeat(vals[i]/key)}</td></tr>`).join('')}</table><p class="keyline"><span class="ico">★</span> = ${esc(keyTxt)}</p>`}
+const SOL={
+ cube:{n:L('cube','cubo'),f:6,e:12,v:8,d:'<path class="solid" d="M60 70 L150 70 L150 160 L60 160 Z"/><path class="solid" d="M60 70 L100 35 L190 35 L150 70 Z"/><path class="solid" d="M150 70 L190 35 L190 125 L150 160 Z"/><path class="hid" d="M60 160 L100 125 L190 125 M100 125 L100 35"/>'},
+ rprism:{n:L('rectangular prism','prisma rectangular'),f:6,e:12,v:8,d:'<path class="solid" d="M30 80 L180 80 L180 160 L30 160 Z"/><path class="solid" d="M30 80 L75 45 L225 45 L180 80 Z"/><path class="solid" d="M180 80 L225 45 L225 125 L180 160 Z"/><path class="hid" d="M30 160 L75 125 L225 125 M75 125 L75 45"/>'},
+ tprism:{n:L('triangular prism','prisma triangular'),f:5,e:9,v:6,d:'<path class="solid" d="M30 160 L80 70 L130 160 Z"/><path class="solid" d="M80 70 L200 50 L250 140 L130 160 Z"/><path class="hid" d="M30 160 L150 140 L250 140 M150 140 L200 50"/>'},
+ cyl:{n:L('cylinder','cilindro'),f:2,e:0,v:0,d:'<path class="solid" d="M60 40 L60 150 A60 18 0 0 0 180 150 L180 40"/><ellipse class="solid" cx="120" cy="40" rx="60" ry="18"/><path class="hid" d="M60 150 A60 18 0 0 1 180 150"/>'},
+ cone:{n:L('cone','cono'),f:1,e:0,v:1,d:'<path class="solid" d="M120 20 L60 150 A60 18 0 0 0 180 150 Z"/><path class="hid" d="M60 150 A60 18 0 0 1 180 150"/>'},
+ sph:{n:L('sphere','esfera'),f:0,e:0,v:0,d:'<circle class="solid" cx="120" cy="95" r="70"/><path class="hid" d="M50 95 A70 20 0 0 0 190 95"/>'}};
+const solidFig=k=>svgW(260,180,SOL[k].d,tx(SOL[k].n));
+const POLYS=[[3,L('triangle','triángulo')],[4,L('quadrilateral','cuadrilátero')],[5,L('pentagon','pentágono')],[6,L('hexagon','hexágono')],[8,L('octagon','octágono')]];
+
+/* ---------- problem generators, one per readiness standard ---------- */
+const G={};
+const OPS={m:L('multiply','multiplicar'),d:L('divide','dividir'),a:L('add','sumar'),s:L('subtract','restar')};
+const opMC=o=>mc(OPS[o],Object.keys(OPS).filter(k=>k!==o).map(k=>OPS[k]));
+
+G['3.4K']=()=>{const k=pick(['m','d','two']);let a=ri(2,9),b=ri(3,10);
+  const C=pick([{x:L('boxes','cajas'),y:L('crayons','crayones')},{x:L('bags','bolsas'),y:L('apples','manzanas')},{x:L('rows of chairs','filas de sillas'),y:L('chairs','sillas')},{x:L('packs','paquetes'),y:L('stickers','calcomanías')},{x:L('tables','mesas'),y:L('students','estudiantes')}]);
+  if(k==='m'){const P=a*b,om=opMC('m');
+    return{type:'num',text:L(`There are ${a} ${C.x.en}. Each one has ${b} ${C.y.en}. How many ${C.y.en} are there in all?`,`Hay ${a} ${C.x.es}. Cada una tiene ${b} ${C.y.es}. ¿Cuántos ${C.y.es} hay en total?`),ans:P,ansText:String(P),
+      hint:L('Equal groups: multiply the number of groups by the number in each group.','Grupos iguales: multiplica el número de grupos por la cantidad en cada grupo.'),
+      g:[S1(L('There are equal groups, and you need the total. Which operation fits?','Hay grupos iguales y necesitas el total. ¿Qué operación corresponde?'),om.ans,L('Same number in each group + find the total = multiply.','Misma cantidad en cada grupo + buscar el total = multiplicar.'),{choices:om.choices}),
+        S1(L(`${a} × ${b} = ?`,`${a} × ${b} = ?`),P,L(`Skip count by ${b}, ${a} times.`,`Cuenta de ${b} en ${b}, ${a} veces.`))],
+      steps:[L(`${a} groups of ${b}`,`${a} grupos de ${b}`),{m:`${a} × ${b} = ${P}`}]}}
+  if(k==='d'){const P=a*b,om=opMC('d');
+    return{type:'num',text:L(`A teacher has ${P} ${C.y.en}. She puts them into ${a} equal groups. How many ${C.y.en} are in each group?`,`Una maestra tiene ${P} ${C.y.es}. Los pone en ${a} grupos iguales. ¿Cuántos ${C.y.es} hay en cada grupo?`),ans:b,ansText:String(b),
+      hint:L('Sharing into equal groups means divide. Think: what times the number of groups makes the total?','Repartir en grupos iguales es dividir. Piensa: ¿qué número por la cantidad de grupos da el total?'),
+      g:[S1(L('The total is shared into equal groups. Which operation fits?','El total se reparte en grupos iguales. ¿Qué operación corresponde?'),om.ans,L('Splitting a total into equal groups = divide.','Separar un total en grupos iguales = dividir.'),{choices:om.choices}),
+        S1(L(`${a} × ? = ${P}`,`${a} × ? = ${P}`),b,L('Use a multiplication fact you know.','Usa una tabla de multiplicar que conozcas.')),
+        S1(L(`So ${P} ÷ ${a} = ?`,`Entonces ${P} ÷ ${a} = ?`),b,L('It is the missing factor you just found.','Es el factor que acabas de encontrar.'))],
+      steps:[L(`${P} shared into ${a} equal groups`,`${P} repartidos en ${a} grupos iguales`),{m:`${P} ÷ ${a} = ${b}   (${a} × ${b} = ${P})`}]}}
+  a=ri(3,8);b=ri(4,9);const P=a*b,g2=ri(3,Math.min(20,P-2)),R=P-g2,om=opMC('m');
+  return{type:'num',text:L(`Leo buys ${a} packs of markers. Each pack has ${b} markers. He gives ${g2} markers to his friends. How many markers does Leo have left?`,`Leo compra ${a} paquetes de marcadores. Cada paquete tiene ${b} marcadores. Les regala ${g2} marcadores a sus amigos. ¿Cuántos marcadores le quedan a Leo?`),ans:R,ansText:String(R),
+    hint:L('This is a two-step problem. First find how many markers he buys, then take away the ones he gives.','Es un problema de dos pasos. Primero busca cuántos marcadores compra y luego quita los que regala.'),
+    g:[S1(L('Step 1: He buys equal packs. Which operation finds how many markers he buys?','Paso 1: Compra paquetes iguales. ¿Qué operación da cuántos marcadores compra?'),om.ans,L('Equal groups → multiply.','Grupos iguales → multiplicar.'),{choices:om.choices}),
+      S1(L(`${a} × ${b} = ?`,`${a} × ${b} = ?`),P,L(`Skip count by ${b}.`,`Cuenta de ${b} en ${b}.`)),
+      S1(L(`Step 2: He gives away ${g2}. ${P} − ${g2} = ?`,`Paso 2: Regala ${g2}. ${P} − ${g2} = ?`),R,L('Giving away means subtract.','Regalar significa restar.'))],
+    steps:[{m:`${a} × ${b} = ${P}`},{m:`${P} − ${g2} = ${R}`}]}};
+
+G['3.5B']=()=>{const k=pick(['arr','strip','miss']);let r=ri(2,6),c=ri(3,9);const P=r*c;
+  if(k==='arr'){const m=mc(`${r} × ${c} = ${P}`,[`${r} + ${c} = ${r+c}`,`${r} × ${c+1} = ${r*(c+1)}`,`${r+1} × ${c} = ${(r+1)*c}`]);
+    const rm=mc(r,[c,r+1]),cm=mc(c,[r,c-1]);
+    return{type:'mc',mono:true,text:L('Which equation matches this array?','¿Qué ecuación corresponde a este arreglo?'),disp:()=>arrayFig(r,c),choices:m.choices,ans:m.ans,ansText:`${r} × ${c} = ${P}`,
+      hint:L('Count the rows, then count how many are in each row. Multiply.','Cuenta las filas y luego cuántos hay en cada fila. Multiplica.'),
+      g:[S1(L('How many rows are there?','¿Cuántas filas hay?'),rm.ans,L('Rows go across (left to right).','Las filas van de lado a lado.'),{choices:rm.choices.map(String)}),
+        S1(L('How many dots are in each row?','¿Cuántos puntos hay en cada fila?'),cm.ans,L('Count one row.','Cuenta una fila.'),{choices:cm.choices.map(String)}),
+        S1(L('Which equation matches?','¿Qué ecuación corresponde?'),m.ans,L('rows × dots in each row = total','filas × puntos en cada fila = total'),{choices:m.choices,mono:true})],
+      steps:[L(`${r} rows with ${c} dots in each row`,`${r} filas con ${c} puntos en cada fila`),{m:`${r} × ${c} = ${P}`}]}}
+  if(k==='strip'){const m=mc(`${P} ÷ ${r} = ?`,[`${P} × ${r} = ?`,`${P} − ${r} = ?`,`${r} ÷ ${P} = ?`]);
+    return{type:'mc',mono:true,text:L(`The strip diagram shows ${P} cookies shared equally on ${r} plates. Which equation can be used to find ?, the number of cookies on each plate?`,`El diagrama de tiras muestra ${P} galletas repartidas en partes iguales en ${r} platos. ¿Qué ecuación sirve para hallar ?, el número de galletas en cada plato?`),
+      disp:()=>strip(r,String(P),'?'),choices:m.choices,ans:m.ans,ansText:`${P} ÷ ${r} = ?`,
+      hint:L('The whole strip is the total. It is split into equal parts, so divide the total by the number of parts.','La tira completa es el total. Está dividida en partes iguales, así que divide el total entre el número de partes.'),
+      g:[N1(L('How many equal parts is the strip divided into?','¿En cuántas partes iguales está dividida la tira?'),r,L('Count the boxes.','Cuenta los cuadros.')),
+        S1(L('Which equation finds the size of one part?','¿Qué ecuación da el tamaño de una parte?'),m.ans,L('total ÷ number of parts = one part','total ÷ número de partes = una parte'),{choices:m.choices,mono:true}),
+        N1(L(`Solve it: ${P} ÷ ${r} = ?`,`Resuélvela: ${P} ÷ ${r} = ?`),c,L(`${r} × ? = ${P}`,`${r} × ? = ${P}`))],
+      steps:[L(`Total ${P}, ${r} equal parts`,`Total ${P}, ${r} partes iguales`),{m:`${P} ÷ ${r} = ${c}`}]}}
+  const dm=opMC('d');
+  return{type:'num',text:L(`What number makes this equation true?`,`¿Qué número hace verdadera esta ecuación?`),disp:()=>`<span class="expr">${r} × ? = ${P}</span>`,ans:c,ansText:String(c),
+    hint:L(`Count by ${r}s until you reach ${P}, or think ${P} ÷ ${r}.`,`Cuenta de ${r} en ${r} hasta llegar a ${P}, o piensa ${P} ÷ ${r}.`),
+    g:[S1(L('A missing factor can be found with which operation?','¿Con qué operación se encuentra un factor que falta?'),dm.ans,L('Multiplication and division are opposites.','La multiplicación y la división son operaciones opuestas.'),{choices:dm.choices}),
+      N1(L(`${P} ÷ ${r} = ?`,`${P} ÷ ${r} = ?`),c,L(`${r} × ${c} = ${P}`,`${r} × ${c} = ${P}`))],
+    steps:[{m:`${P} ÷ ${r} = ${c}`},{m:`${r} × ${c} = ${P} ✓`}]}};
+
+G['3.4A']=()=>{const two=Math.random()<.5;
+  if(!two){const up=Math.random()<.5;const a=up?ri(120,700):ri(300,900),b=up?ri(105,999-a):ri(105,a-60);const R=up?a+b:a-b;
+    const t=up?L(`A school library had ${a} books. It got ${b} new books. How many books does the library have now?`,`La biblioteca de una escuela tenía ${a} libros. Recibió ${b} libros nuevos. ¿Cuántos libros tiene ahora?`)
+      :L(`A farm had ${a} pumpkins. The farmers sold ${b} of them. How many pumpkins are left?`,`Una granja tenía ${a} calabazas. Los granjeros vendieron ${b}. ¿Cuántas calabazas quedan?`);
+    const om=opMC(up?'a':'s');
+    return{type:'num',text:t,ans:R,ansText:tN(R),hint:up?L('Got more means add. Line up the ones, tens and hundreds.','Recibir más significa sumar. Alinea las unidades, decenas y centenas.'):L('Sold means some are taken away, so subtract. Regroup if you need to.','Vender significa que se quitan algunas, así que resta. Reagrupa si lo necesitas.'),
+      g:[S1(L('Which operation fits the story?','¿Qué operación corresponde al problema?'),om.ans,up?L('The amount gets bigger.','La cantidad aumenta.'):L('The amount gets smaller.','La cantidad disminuye.'),{choices:om.choices}),
+        N1(L(`${a} ${up?'+':'−'} ${b} = ?`,`${a} ${up?'+':'−'} ${b} = ?`),R,L('Work from the ones place to the hundreds place.','Trabaja de las unidades a las centenas.'))],
+      steps:[{m:`${a} ${up?'+':'−'} ${b} = ${R}`}]}}
+  const a=ri(200,500),b=ri(110,400),S=a+b,c=ri(80,Math.min(S-50,400)),R=S-c;
+  return{type:'num',text:L(`On Monday, ${a} people visited the zoo. On Tuesday, ${b} people visited. On Wednesday, ${c} fewer people visited than on Monday and Tuesday together. How many people visited on Wednesday?`,`El lunes, ${a} personas visitaron el zoológico. El martes lo visitaron ${b} personas. El miércoles fueron ${c} personas menos que el lunes y el martes juntos. ¿Cuántas personas lo visitaron el miércoles?`),
+    ans:R,ansText:tN(R),hint:L('Two steps: add Monday and Tuesday, then subtract the fewer people.','Dos pasos: suma el lunes y el martes, y luego resta las personas de menos.'),
+    g:[N1(L(`Step 1: Monday and Tuesday together: ${a} + ${b} = ?`,`Paso 1: el lunes y el martes juntos: ${a} + ${b} = ?`),S,L('Add the hundreds, tens and ones.','Suma centenas, decenas y unidades.')),
+      N1(L(`Step 2: "${c} fewer" means subtract. ${S} − ${c} = ?`,`Paso 2: "${c} menos" significa restar. ${S} − ${c} = ?`),R,L('Regroup if a digit on top is smaller.','Reagrupa si un dígito de arriba es más pequeño.'))],
+    steps:[{m:`${a} + ${b} = ${S}`},{m:`${S} − ${c} = ${R}`}]}};
+
+G['3.5A']=()=>{const k=pick(['take','join','compare']);let eq,ds,t,ans;
+  if(k==='take'){const a=ri(250,900),r=ri(60,a-80),s=a-r;t=L(`Maya had ${a} stickers. She gave some stickers to her brother. Now she has ${r} stickers. Which equation can be used to find s, the number of stickers she gave away?`,`Maya tenía ${a} calcomanías. Le dio algunas a su hermano. Ahora tiene ${r}. ¿Qué ecuación sirve para hallar s, el número de calcomanías que regaló?`);
+    eq=`${a} − s = ${r}`;ds=[`${a} + ${r} = s`,`s − ${a} = ${r}`,`${r} − s = ${a}`];ans=s}
+  else if(k==='join'){const a=ri(100,450),p=ri(100,450),T=a+p;t=L(`Leo read ${a} pages last week and some pages this week. He read ${T} pages in all. Which equation can be used to find p, the pages he read this week?`,`Leo leyó ${a} páginas la semana pasada y algunas esta semana. Leyó ${T} páginas en total. ¿Qué ecuación sirve para hallar p, las páginas que leyó esta semana?`);
+    eq=`${a} + p = ${T}`;ds=[`${a} − p = ${T}`,`${T} + ${a} = p`,`p − ${T} = ${a}`];ans=p}
+  else{const a=ri(300,800),d=ri(40,250),b=a-d;t=L(`Ana's school collected ${a} cans. Ben's school collected ${d} fewer cans than Ana's school. Which equation can be used to find b, the number of cans Ben's school collected?`,`La escuela de Ana juntó ${a} latas. La escuela de Ben juntó ${d} latas menos que la de Ana. ¿Qué ecuación sirve para hallar b, el número de latas que juntó la escuela de Ben?`);
+    eq=`${a} − ${d} = b`;ds=[`${a} + ${d} = b`,`b − ${a} = ${d}`,`${d} − b = ${a}`];ans=b}
+  const m=mc(eq,ds),vr=eq.match(/[spb]/)[0];
+  const sm=mc(k==='join'?L('The parts are joined to make a total.','Las partes se juntan para formar un total.'):k==='take'?L('Some were taken away from the start.','Se quitaron algunas del principio.'):L('One amount is less than another.','Una cantidad es menor que otra.'),
+    [L('Equal groups are being shared.','Se reparten grupos iguales.'),k==='join'?L('Some were taken away from the start.','Se quitaron algunas del principio.'):L('The parts are joined to make a total.','Las partes se juntan para formar un total.')]);
+  return{type:'mc',mono:true,text:t,choices:m.choices,ans:m.ans,ansText:eq,
+    hint:L('Retell the story with the letter in place of the unknown number, then write it as an equation.','Vuelve a contar el problema con la letra en lugar del número desconocido y escríbelo como ecuación.'),
+    g:[S1(L('What is happening in the story?','¿Qué pasa en el problema?'),sm.ans,L('Did the amount grow, shrink, or are two amounts being compared?','¿La cantidad creció, disminuyó, o se comparan dos cantidades?'),{choices:sm.choices}),
+      S1(L(`Which equation tells the story, with ${vr} for the unknown?`,`¿Qué ecuación cuenta el problema, con ${vr} como número desconocido?`),m.ans,L('Follow the order of the story.','Sigue el orden del problema.'),{choices:m.choices,mono:true}),
+      N1(L(`Now solve it. What is ${vr}?`,`Ahora resuélvela. ¿Cuánto vale ${vr}?`),ans,L('Use the inverse operation if you need to.','Usa la operación inversa si la necesitas.'))],
+    steps:[L('Write the story as an equation:','Escribe el problema como ecuación:'),{m:eq},{m:`${vr} = ${ans}`}]}};
+
+const RULES=[{x:L('Tricycles','Triciclos'),y:L('Wheels','Ruedas'),k:3},{x:L('Spiders','Arañas'),y:L('Legs','Patas'),k:8},{x:L('Cars','Carros'),y:L('Wheels','Ruedas'),k:4},
+ {x:L('Packs','Paquetes'),y:L('Juice boxes','Jugos'),k:6},{x:L('Weeks','Semanas'),y:L('Days','Días'),k:7},{x:L('Hands','Manos'),y:L('Fingers','Dedos'),k:5},{x:L('Bikes','Bicicletas'),y:L('Wheels','Ruedas'),k:2}];
+G['3.5E']=()=>{const add=Math.random()<.3;let R,f,desc,ds;
+  if(add){const k=ri(3,9);R={x:L("Mia's age",'Edad de Mia'),y:L("Her brother's age",'Edad de su hermano'),k};f=x=>x+k;desc=L(`Add ${k} to Mia's age.`,`Suma ${k} a la edad de Mia.`);
+    ds=[L(`Multiply Mia's age by ${k}.`,`Multiplica la edad de Mia por ${k}.`),L(`Subtract ${k} from Mia's age.`,`Resta ${k} a la edad de Mia.`),L(`Add ${k+1} to Mia's age.`,`Suma ${k+1} a la edad de Mia.`)]}
+  else{R=pick(RULES);f=x=>x*R.k;desc=L(`Multiply the number of ${R.x.en.toLowerCase()} by ${R.k}.`,`Multiplica el número de ${R.x.es.toLowerCase()} por ${R.k}.`);
+    ds=[L(`Add ${R.k} to the number of ${R.x.en.toLowerCase()}.`,`Suma ${R.k} al número de ${R.x.es.toLowerCase()}.`),L(`Multiply the number of ${R.x.en.toLowerCase()} by ${R.k+1}.`,`Multiplica el número de ${R.x.es.toLowerCase()} por ${R.k+1}.`),L(`Divide the number of ${R.x.en.toLowerCase()} by ${R.k}.`,`Divide el número de ${R.x.es.toLowerCase()} entre ${R.k}.`)]}
+  const s=add?ri(5,8):1,xs=add?[s,s+1,s+2,s+4]:[1,2,3,4],miss=add?ri(10,14):pick([6,7,8,9]);
+  const tb=()=>`<table class="tb"><tr><th>${esc(tx(R.x))}</th>${xs.map(v=>`<td>${v}</td>`).join('')}<td>${miss}</td></tr><tr><th>${esc(tx(R.y))}</th>${xs.map(v=>`<td>${f(v)}</td>`).join('')}<td>?</td></tr></table>`;
+  const dm=mc(desc,ds),ans=f(miss);
+  if(Math.random()<.5)return{type:'num',text:L('The table shows a pattern. What number belongs in place of the question mark?','La tabla muestra un patrón. ¿Qué número va en lugar del signo de interrogación?'),disp:tb,ans,ansText:String(ans),
+    hint:L('Compare each top number with the number under it. What do you do to the top number every time?','Compara cada número de arriba con el de abajo. ¿Qué le haces siempre al número de arriba?'),
+    g:[S1(L('Which rule describes the table?','¿Qué regla describe la tabla?'),dm.ans,L(`Check the rule with every column, not just one.`,`Revisa la regla con todas las columnas, no solo con una.`),{choices:dm.choices}),
+      N1(L(`Use the rule with ${miss}. What is the missing number?`,`Usa la regla con ${miss}. ¿Cuál es el número que falta?`),ans,add?L(`${miss} + ${R.k}`,`${miss} + ${R.k}`):L(`${miss} × ${R.k}`,`${miss} × ${R.k}`))],
+    steps:[J(L('Rule: ','Regla: '),desc),{m:add?`${miss} + ${R.k} = ${ans}`:`${miss} × ${R.k} = ${ans}`}]};
+  return{type:'mc',text:L('Which describes the relationship between the numbers in the table?','¿Qué describe la relación entre los números de la tabla?'),disp:tb,choices:dm.choices,ans:dm.ans,ansText:tx(desc),
+    hint:L('Test each choice on every column of the table.','Prueba cada opción con todas las columnas de la tabla.'),
+    g:[N1(L(`When the top number is ${xs[1]}, what is the bottom number?`,`Cuando el número de arriba es ${xs[1]}, ¿cuál es el de abajo?`),f(xs[1]),L('Read the second column.','Lee la segunda columna.')),
+      S1(L('Which rule works for every column?','¿Qué regla funciona en todas las columnas?'),dm.ans,L(`Try it: does it turn ${xs[0]} into ${f(xs[0])} and ${xs[2]} into ${f(xs[2])}?`,`Pruébala: ¿convierte ${xs[0]} en ${f(xs[0])} y ${xs[2]} en ${f(xs[2])}?`),{choices:dm.choices})],
+    steps:[{m:xs.map(v=>`${v} → ${f(v)}`).join('   ')},desc]}};
+
+const EQP=[[2,4],[2,6],[2,8],[3,6],[4,8]];
+G['3.3F']=()=>{const[b,d]=pick(EQP),a=ri(1,b-1),k=d/b,n=a*k;
+  if(Math.random()<.55)return{type:'num',text:L(`The fraction bars are the same size. What number goes in the box to make the fractions equivalent?`,`Las barras de fracciones son del mismo tamaño. ¿Qué número va en el recuadro para que las fracciones sean equivalentes?`),
+    disp:()=>`<span class="expr">${a}/${b} = ?/${d}</span>`+fracBars([[a,b,`${a}/${b}`],[0,d,`?/${d}`]],'fraction bars'),ans:n,ansText:`${n}/${d}`,
+    hint:L(`Each 1/${b} piece is the same size as ${k} of the 1/${d} pieces.`,`Cada pedazo de 1/${b} mide lo mismo que ${k} pedazos de 1/${d}.`),
+    g:[N1(L(`How many 1/${d} pieces fit in one 1/${b} piece?`,`¿Cuántos pedazos de 1/${d} caben en un pedazo de 1/${b}?`),k,L(`${d} pieces ÷ ${b} pieces`,`${d} pedazos ÷ ${b} pedazos`)),
+      N1(L(`${a}/${b} is ${a} piece${a>1?'s':''}. How many 1/${d} pieces is that?`,`${a}/${b} es ${a} pedazo${a>1?'s':''}. ¿Cuántos pedazos de 1/${d} son?`),n,L(`${a} × ${k}`,`${a} × ${k}`))],
+    steps:[L(`1/${b} = ${k}/${d}`,`1/${b} = ${k}/${d}`),{m:`${a}/${b} = ${n}/${d}`}]};
+  const right=`${n}/${d}`,m=mc(right,[`${a}/${d}`,`${n}/${b}`,`${n+1}/${d}`,`${Math.max(1,n-1)}/${d}`].filter(x=>x!==right));
+  return{type:'mc',mono:true,text:L(`Point P is at ${a}/${b} on the number line. Which fraction names the same point?`,`El punto P está en ${a}/${b} en la recta numérica. ¿Qué fracción nombra el mismo punto?`),disp:()=>numLine(d,n,'number line'),choices:m.choices,ans:m.ans,ansText:right,
+    hint:L(`The number line is split into ${d} equal parts. Count the jumps from 0 to P.`,`La recta está dividida en ${d} partes iguales. Cuenta los saltos de 0 a P.`),
+    g:[N1(L('Into how many equal parts is the line from 0 to 1 divided?','¿En cuántas partes iguales está dividida la recta de 0 a 1?'),d,L('Count the spaces, not the marks.','Cuenta los espacios, no las marcas.')),
+      N1(L('How many parts from 0 to P?','¿Cuántas partes hay de 0 a P?'),n,L('Count the jumps.','Cuenta los saltos.')),
+      S1(L('Which fraction names P?','¿Qué fracción nombra a P?'),m.ans,L('parts to P / total parts','partes hasta P / partes en total'),{choices:m.choices,mono:true})],
+    steps:[L(`P is ${n} of ${d} equal parts from 0.`,`P está a ${n} de ${d} partes iguales desde 0.`),{m:`${a}/${b} = ${n}/${d}`}]}};
+
+G['3.3H']=()=>{const sameD=Math.random()<.5;let a,b,c,d;
+  if(sameD){b=d=pick([3,4,6,8]);a=ri(1,b-1);do c=ri(1,b-1);while(c===a)}else{a=c=ri(1,2);b=pick([2,3,4,6,8].filter(x=>x>a));do d=pick([2,3,4,6,8].filter(x=>x>c));while(d===b)}
+  const v1=a/b,v2=c/d,sym=v1>v2?'>':'<';const m=mc(sym,['>','<','='].filter(x=>x!==sym));
+  const why=sameD?L(`Same-size pieces (${b}ths), so more pieces is more: ${Math.max(a,c)} > ${Math.min(a,c)}.`,`Pedazos del mismo tamaño (${b} partes), así que más pedazos es más: ${Math.max(a,c)} > ${Math.min(a,c)}.`)
+    :L(`Same number of pieces (${a}), so bigger pieces win. Fewer parts in the whole means bigger pieces: 1/${Math.min(b,d)} > 1/${Math.max(b,d)}.`,`Misma cantidad de pedazos (${a}), así que ganan los pedazos más grandes. Menos partes en el entero significa pedazos más grandes: 1/${Math.min(b,d)} > 1/${Math.max(b,d)}.`);
+  const tm=mc(sameD?L('the denominators (bottom numbers)','los denominadores (números de abajo)'):L('the numerators (top numbers)','los numeradores (números de arriba)'),[sameD?L('the numerators (top numbers)','los numeradores (números de arriba)'):L('the denominators (bottom numbers)','los denominadores (números de abajo)'),L('nothing','nada')]);
+  return{type:'mc',mono:true,text:L(`Two pans of cornbread are the same size. Which symbol makes the comparison true?`,`Dos moldes de pan de maíz son del mismo tamaño. ¿Qué símbolo hace verdadera la comparación?`),
+    disp:()=>`<span class="expr">${a}/${b}  ___  ${c}/${d}</span>`+fracBars([[a,b,`${a}/${b}`],[c,d,`${c}/${d}`]],'fraction bars'),choices:m.choices,ans:m.ans,ansText:`${a}/${b} ${sym} ${c}/${d}`,
+    hint:L('Check what is the same: the top numbers or the bottom numbers. Then compare the pieces.','Revisa qué es igual: los números de arriba o los de abajo. Luego compara los pedazos.'),
+    g:[S1(L('What is the same in both fractions?','¿Qué es igual en las dos fracciones?'),tm.ans,L('Look at the numbers above and below the line.','Mira los números arriba y abajo de la raya.'),{choices:tm.choices}),
+      S1(L(`Is ${a}/${b} greater or less than ${c}/${d}?`,`¿${a}/${b} es mayor o menor que ${c}/${d}?`),m.ans,why,{choices:m.choices,mono:true})],
+    steps:[why,{m:`${a}/${b} ${sym} ${c}/${d}`}]}};
+
+G['3.6C']=()=>{const k=pick(['grid','word','word']);let r=ri(3,k==='grid'?7:9),c=ri(4,k==='grid'?9:10);if(k!=='grid'&&r>=c){r=ri(2,c-1)}const A=r*c;
+  const u=pick([L('feet','pies'),L('meters','metros'),L('inches','pulgadas')]);
+  const t=k==='grid'?L('Each small square is 1 square unit. What is the area of the rectangle, in square units?','Cada cuadrito es 1 unidad cuadrada. ¿Cuál es el área del rectángulo, en unidades cuadradas?')
+    :L(`A garden is shaped like a rectangle. It is ${c} ${u.en} long and ${r} ${u.en} wide. What is the area of the garden, in square ${u.en}?`,`Un jardín tiene forma de rectángulo. Mide ${c} ${u.es} de largo y ${r} ${u.es} de ancho. ¿Cuál es el área del jardín, en ${u.es} cuadrados?`);
+  return{type:'num',text:t,disp:k==='grid'?()=>gridRect(r,c):()=>polyFig('rect',[`${c} ${tx(u)}`,`${r} ${tx(u)}`,null,null]),ans:A,ansText:k==='grid'?tx(L(`${A} square units`,`${A} unidades cuadradas`)):tx(L(`${A} square ${u.en}`,`${A} ${u.es} cuadrados`)),
+    hint:L('Area = number of rows × number of squares in each row (length × width).','Área = número de filas × cuadritos en cada fila (largo × ancho).'),
+    g:[N1(k==='grid'?L('How many rows of squares are there?','¿Cuántas filas de cuadritos hay?'):L('Think of it as rows of 1-unit squares. How many rows (the width)?','Piénsalo como filas de cuadritos de 1 unidad. ¿Cuántas filas (el ancho)?'),r,L('Count down the side.','Cuenta hacia abajo por el lado.')),
+      N1(L('How many squares are in each row (the length)?','¿Cuántos cuadritos hay en cada fila (el largo)?'),c,L('Count across the top.','Cuenta a lo largo de arriba.')),
+      N1(L(`Area = ${r} × ${c} = ?`,`Área = ${r} × ${c} = ?`),A,L('Multiply rows by squares in each row.','Multiplica filas por cuadritos en cada fila.'))],
+    steps:[{m:`${r} × ${c} = ${A}`},L('Area is measured in square units.','El área se mide en unidades cuadradas.')]}};
+
+G['3.7B']=()=>{const u=pick([L('inches','pulgadas'),L('centimeters','centímetros'),L('feet','pies'),L('meters','metros')]);const kind=pick(['tri','trap','pent','hex','rect']);const n=SHAPES[kind].length;
+  let s;if(kind==='rect'){const a=ri(5,20),b=ri(3,12);s=[a,b,a,b]}else s=Array.from({length:n},()=>ri(3,15));const P=s.reduce((x,y)=>x+y,0);
+  const miss=Math.random()<.45&&kind!=='rect';
+  if(!miss){const lab=kind==='rect'?[`${s[0]} ${tx(u)}`,`${s[1]} ${tx(u)}`,null,null]:s.map(v=>`${v}`);
+    return{type:'num',text:kind==='rect'?L(`What is the perimeter of the rectangle, in ${u.en}?`,`¿Cuál es el perímetro del rectángulo, en ${u.es}?`):L(`The side lengths of the shape are in ${u.en}. What is its perimeter, in ${u.en}?`,`Las medidas de los lados están en ${u.es}. ¿Cuál es el perímetro de la figura, en ${u.es}?`),
+      disp:()=>polyFig(kind,lab),ans:P,ansText:`${P} ${tx(u)}`,
+      hint:L('Perimeter is the distance around the shape. Add every side.','El perímetro es la distancia alrededor de la figura. Suma todos los lados.'),
+      g:[N1(L('How many sides does the shape have?','¿Cuántos lados tiene la figura?'),n,kind==='rect'?L('A rectangle has 4 sides. Opposite sides are equal, so 2 labels are enough.','Un rectángulo tiene 4 lados. Los lados opuestos son iguales, así que bastan 2 medidas.'):L('Count the sides.','Cuenta los lados.')),
+        N1(L(`Add all ${n} sides: ${s.join(' + ')} = ?`,`Suma los ${n} lados: ${s.join(' + ')} = ?`),P,L('Add two at a time.','Suma de dos en dos.'))],
+      steps:[L('Perimeter = sum of all sides','Perímetro = suma de todos los lados'),{m:`${s.join(' + ')} = ${P}`}]}}
+  const j=ri(0,n-1),known=s.filter((_,i)=>i!==j),sumK=P-s[j];const lab=s.map((v,i)=>i===j?'?':`${v}`);
+  return{type:'num',text:L(`The perimeter of this shape is ${P} ${u.en}. What is the length of the missing side, in ${u.en}?`,`El perímetro de esta figura es ${P} ${u.es}. ¿Cuánto mide el lado que falta, en ${u.es}?`),
+    disp:()=>polyFig(kind,lab),ans:s[j],ansText:`${s[j]} ${tx(u)}`,
+    hint:L('Add the sides you know, then subtract that sum from the perimeter.','Suma los lados que conoces y resta esa suma del perímetro.'),
+    g:[N1(L(`Add the sides you know: ${known.join(' + ')} = ?`,`Suma los lados que conoces: ${known.join(' + ')} = ?`),sumK,L('Add two at a time.','Suma de dos en dos.')),
+      N1(L(`Missing side = ${P} − ${sumK} = ?`,`Lado que falta = ${P} − ${sumK} = ?`),s[j],L('Perimeter minus the known sides.','Perímetro menos los lados conocidos.'))],
+    steps:[{m:`${known.join(' + ')} = ${sumK}`},{m:`${P} − ${sumK} = ${s[j]}`}]}};
+
+const PLN=[L('ten thousands','decenas de millar'),L('thousands','unidades de millar'),L('hundreds','centenas'),L('tens','decenas'),L('ones','unidades')];
+G['3.2A']=()=>{const k=pick(['exp','val','comp']);
+  if(k==='exp'){let d;do d=[ri(1,9),ri(0,9),ri(0,9),ri(0,9),ri(0,9)];while(d.filter(x=>x===0).length>1||d[2]===0);const N=+d.join(''),pv=[10000,1000,100,10,1];
+    const ex=a=>a.map((x,i)=>x*pv[i]).filter(x=>x).map(tN).join(' + ');const right=ex(d);
+    const w1=ex([d[0],d[1],d[2],0,0])+(d[3]?' + '+tN(d[3]):'')+(d[4]?' + '+tN(d[4]*10):''),w2=[d[0]*1000,d[1]*100,d[2]*10,d[3],].filter(x=>x).map(tN).join(' + ')+(d[4]?' + '+d[4]:''),w3=ex([d[0],d[2],d[1],d[3],d[4]]);
+    const m=mc(right,[w1,w2,w3].filter(x=>x!==right));
+    return{type:'mc',mono:true,text:L(`Which shows ${tN(N)} in expanded form?`,`¿Cuál muestra ${tN(N)} en forma desarrollada?`),choices:m.choices,ans:m.ans,ansText:right,
+      hint:L('Write the value of each digit: ten thousands, thousands, hundreds, tens, ones.','Escribe el valor de cada dígito: decenas de millar, unidades de millar, centenas, decenas, unidades.'),
+      g:[N1(L(`What is the value of the ${d[0]} in ${tN(N)}?`,`¿Cuál es el valor del ${d[0]} en ${tN(N)}?`),d[0]*10000,L('It is in the ten thousands place.','Está en el lugar de las decenas de millar.')),
+        N1(L(`What is the value of the digit in the hundreds place?`,`¿Cuál es el valor del dígito en el lugar de las centenas?`),d[2]*100,L(`The hundreds digit is ${d[2]}.`,`El dígito de las centenas es ${d[2]}.`)),
+        S1(L('Which expanded form is correct?','¿Qué forma desarrollada es correcta?'),m.ans,L('Each part should match one digit and its place.','Cada parte debe coincidir con un dígito y su lugar.'),{choices:m.choices,mono:true})],
+      steps:[{m:`${tN(N)} = ${right}`}]}}
+  if(k==='val'){const N=ri(10000,99999),s=String(N),i=ri(0,4),dg=+s[i];if(dg===0)return G['3.2A']();const V=dg*[10000,1000,100,10,1][i];
+    return{type:'num',text:L(`What is the value of the digit ${dg} in ${tN(N)}?`,`¿Cuál es el valor del dígito ${dg} en ${tN(N)}?`),ans:V,ansText:tN(V),
+      hint:L('Find which place the digit is in, then multiply the digit by that place.','Busca en qué lugar está el dígito y multiplícalo por el valor de ese lugar.'),
+      g:[S1(L(`Which place is the ${dg} in?`,`¿En qué lugar está el ${dg}?`),i,L('From the right: ones, tens, hundreds, thousands, ten thousands.','Desde la derecha: unidades, decenas, centenas, unidades de millar, decenas de millar.'),{choices:PLN}),
+        N1(L(`So its value is ${dg} × ${tN([10000,1000,100,10,1][i])} = ?`,`Entonces su valor es ${dg} × ${tN([10000,1000,100,10,1][i])} = ?`),V,L('Add the zeros for that place.','Agrega los ceros de ese lugar.'))],
+      steps:[J(L(`The ${dg} is in the `,`El ${dg} está en el lugar de las `),PLN[i],L(' place.','.')),{m:`${dg} × ${tN([10000,1000,100,10,1][i])} = ${tN(V)}`}]}}
+  const tt=ri(1,8),th=ri(10,19),h=ri(1,9),o=ri(1,9),N=tt*10000+th*1000+h*100+o;
+  return{type:'num',text:L(`What number is ${tt} ten thousands, ${th} thousands, ${h} hundreds, and ${o} ones?`,`¿Qué número es ${tt} decenas de millar, ${th} unidades de millar, ${h} centenas y ${o} unidades?`),ans:N,ansText:tN(N),
+    hint:L(`Find the value of each part and add. ${th} thousands is more than 10 thousands, so it regroups.`,`Busca el valor de cada parte y suma. ${th} unidades de millar es más de 10 millares, así que se reagrupa.`),
+    g:[N1(L(`${tt} ten thousands = ?`,`${tt} decenas de millar = ?`),tt*10000,L(`${tt} × 10,000`,`${tt} × 10,000`)),N1(L(`${th} thousands = ?`,`${th} unidades de millar = ?`),th*1000,L(`${th} × 1,000`,`${th} × 1,000`)),
+      N1(L(`Add: ${tN(tt*10000)} + ${tN(th*1000)} + ${h*100} + ${o} = ?`,`Suma: ${tN(tt*10000)} + ${tN(th*1000)} + ${h*100} + ${o} = ?`),N,L('Add place by place.','Suma lugar por lugar.'))],
+    steps:[{m:`${tN(tt*10000)} + ${tN(th*1000)} + ${h*100} + ${o} = ${tN(N)}`}]}};
+
+G['3.2D']=()=>{if(Math.random()<.5){const a=ri(10000,99999);let b;const s=String(a).split('');const i=ri(1,3),j=i+1;if(s[i]===s[j])s[j]=String((+s[j]+3)%10);[s[i],s[j]]=[s[j],s[i]];b=+s.join('');if(b===a)b=a-ri(1,900);
+    const sym=a>b?'>':'<',m=mc(sym,['>','<','='].filter(x=>x!==sym));let fd=0;const A=String(a),B=String(b);while(A[fd]===B[fd])fd++;
+    return{type:'mc',mono:true,text:L('Which symbol makes the comparison true?','¿Qué símbolo hace verdadera la comparación?'),disp:()=>`<span class="expr">${tN(a)}  ___  ${tN(b)}</span>`,choices:m.choices,ans:m.ans,ansText:`${tN(a)} ${sym} ${tN(b)}`,
+      hint:L('Compare digits from left to right. The first place where they are different decides.','Compara los dígitos de izquierda a derecha. El primer lugar donde son diferentes decide.'),
+      g:[S1(L('In which place do the digits first become different?','¿En qué lugar los dígitos son diferentes por primera vez?'),fd,L('Start at the ten thousands place and move right.','Empieza en las decenas de millar y avanza a la derecha.'),{choices:PLN}),
+        S1(L(`${A[fd]} is ${+A[fd]>+B[fd]?'greater':'less'} than ${B[fd]}. Which symbol is correct?`,`${A[fd]} es ${+A[fd]>+B[fd]?'mayor':'menor'} que ${B[fd]}. ¿Qué símbolo es correcto?`),m.ans,L('The open side of > or < faces the greater number.','La parte abierta de > o < apunta al número mayor.'),{choices:m.choices,mono:true})],
+      steps:[J(L('First different place: ','Primer lugar diferente: '),PLN[fd],` (${A[fd]} vs. ${B[fd]})`),{m:`${tN(a)} ${sym} ${tN(b)}`}]}}
+  const C=pick([[L('Austin','Austin'),L('Waco','Waco'),L('Tyler','Tyler'),L('Midland','Midland')]]);const base=ri(20,80)*1000;const v=shuf([base+ri(100,999),base+ri(1000,4999),base-ri(1000,4999),base+ri(10,99)]);
+  const ord=v.slice().sort((x,y)=>x-y),right=ord.map(tN).join(', ');const m=mc(right,[ord.slice().reverse().map(tN).join(', '),[ord[1],ord[0],ord[2],ord[3]].map(tN).join(', '),[ord[0],ord[2],ord[1],ord[3]].map(tN).join(', ')]);
+  return{type:'mc',mono:true,text:L(`A school counted how many cans each grade collected: ${v.map(tN).join(', ')}. Which list shows the numbers in order from least to greatest?`,`Una escuela contó cuántas latas juntó cada grado: ${v.map(tN).join(', ')}. ¿Qué lista muestra los números en orden de menor a mayor?`),
+    choices:m.choices,ans:m.ans,ansText:right,hint:L('Line up the numbers by place value. Compare from the left.','Alinea los números según el valor posicional. Compara desde la izquierda.'),
+    g:[N1(L('Which number is the least? Type it.','¿Cuál número es el menor? Escríbelo.'),ord[0],L('Look for the smallest thousands digit first.','Busca primero el dígito de millares más pequeño.')),
+      N1(L('Which number is the greatest? Type it.','¿Cuál número es el mayor? Escríbelo.'),ord[3],L('Compare the thousands, then the hundreds.','Compara los millares y luego las centenas.')),
+      S1(L('Which list goes from least to greatest?','¿Qué lista va de menor a mayor?'),m.ans,L('It must start with the least and end with the greatest.','Debe empezar con el menor y terminar con el mayor.'),{choices:m.choices,mono:true})],
+    steps:[{m:ord.map(tN).join(' < ')}]}};
+
+G['3.6A']=()=>{const k=pick(['count','name','poly']);
+  if(k==='count'){const s=pick(['cube','rprism','tprism','cone']),S0=SOL[s],at=pick(s==='cone'?['v']:['f','e','v']);const AN={f:L('faces','caras'),e:L('edges','aristas'),v:L('vertices','vértices')};const ans=S0[at];
+    return{type:'num',text:L(`How many ${AN[at].en} does this ${S0.n.en} have?`,`¿${at==='v'?'Cuántos':'Cuántas'} ${AN[at].es} tiene este ${S0.n.es}?`),disp:()=>solidFig(s),ans,ansText:String(ans),
+      hint:L('Faces are flat surfaces. Edges are where two faces meet. Vertices are corners where edges meet. Count the hidden ones (dashed) too.','Las caras son superficies planas. Las aristas son donde se juntan dos caras. Los vértices son las esquinas donde se juntan las aristas. Cuenta también las ocultas (punteadas).'),
+      g:[S1(L(`What is a${at==='e'?'n edge':at==='f'?' face':' vertex'}?`,`¿Qué es ${at==='e'?'una arista':at==='f'?'una cara':'un vértice'}?`),['f','e','v'].indexOf(at),L('Think about flat sides, lines, and corners.','Piensa en lados planos, líneas y esquinas.'),{choices:[L('a flat surface','una superficie plana'),L('a line where two faces meet','una línea donde se juntan dos caras'),L('a corner where edges meet','una esquina donde se juntan aristas')]}),
+        N1(L(`Count them on the ${S0.n.en}, including the hidden ones.`,`Cuéntalas en el ${S0.n.es}, incluidas las ocultas.`),ans,s==='cube'||s==='rprism'?L('Count the front and back faces, then the 4 around.','Cuenta la cara de frente y la de atrás, y luego las 4 de alrededor.'):L('Count the top shape and the bottom shape separately, then the sides.','Cuenta la figura de arriba y la de abajo por separado, y luego los lados.'))],
+      steps:[J(L(`A ${S0.n.en} has `,`Un ${S0.n.es} tiene `),`${S0.f} `,L('faces, ','caras, '),`${S0.e} `,L('edges, and ','aristas y '),`${S0.v} `,L('vertices.','vértices.'))]}}
+  if(k==='name'){const s=pick(['cube','rprism','tprism','cyl','cone','sph']);const D={cube:L('It has 6 faces, and every face is a square.','Tiene 6 caras y todas son cuadrados.'),rprism:L('It has 6 faces that are rectangles, and not all faces are squares.','Tiene 6 caras que son rectángulos, y no todas son cuadrados.'),
+      tprism:L('It has 5 faces: 2 triangles and 3 rectangles.','Tiene 5 caras: 2 triángulos y 3 rectángulos.'),cyl:L('It has 2 flat faces that are circles and 1 curved surface.','Tiene 2 caras planas que son círculos y 1 superficie curva.'),
+      cone:L('It has 1 flat face that is a circle, 1 curved surface, and 1 vertex.','Tiene 1 cara plana que es un círculo, 1 superficie curva y 1 vértice.'),sph:L('It has only a curved surface. It has no faces, edges, or vertices.','Solo tiene una superficie curva. No tiene caras, aristas ni vértices.')};
+    const m=mc(SOL[s].n,shuf(Object.keys(SOL).filter(x=>x!==s)).slice(0,3).map(x=>SOL[x].n));
+    return{type:'mc',text:J(L('Which solid figure is described? ','¿Qué cuerpo geométrico se describe? '),D[s]),choices:m.choices,ans:m.ans,ansText:tx(SOL[s].n),
+      hint:L('Picture each solid. Count its flat faces and check whether it has a curved surface.','Imagina cada cuerpo. Cuenta sus caras planas y revisa si tiene una superficie curva.'),
+      g:[S1(L('Does the solid have a curved surface?','¿El cuerpo tiene una superficie curva?'),['cyl','cone','sph'].includes(s)?0:1,L('Cylinders, cones and spheres are curved. Prisms and cubes are not.','Los cilindros, conos y esferas son curvos. Los prismas y cubos no.'),{choices:[L('Yes','Sí'),L('No','No')]}),
+        S1(L('Which solid is it?','¿Qué cuerpo es?'),m.ans,D[s],{choices:m.choices})],
+      steps:[D[s],J(L('That is a ','Es un '),SOL[s].n,'.')]}}
+  const[n,nm]=pick(POLYS);const m=mc(nm,shuf(POLYS.filter(p=>p[0]!==n)).slice(0,3).map(p=>p[1]));
+  return{type:'mc',text:L(`A flat figure has ${n} straight sides and ${n} vertices. What is the name of the figure?`,`Una figura plana tiene ${n} lados rectos y ${n} vértices. ¿Cómo se llama la figura?`),choices:m.choices,ans:m.ans,ansText:tx(nm),
+    hint:L('tri = 3, quadri = 4, penta = 5, hexa = 6, octa = 8','tri = 3, cuadri = 4, penta = 5, hexa = 6, octa = 8'),
+    g:[N1(L('How many sides does it have?','¿Cuántos lados tiene?'),n,L('Read the problem.','Lee el problema.')),S1(L('Which name means that many sides?','¿Qué nombre significa esa cantidad de lados?'),m.ans,L('tri = 3, quadri = 4, penta = 5, hexa = 6, octa = 8','tri = 3, cuadri = 4, penta = 5, hexa = 6, octa = 8'),{choices:m.choices})],
+    steps:[J(`${n} `,L('sides → ','lados → '),nm)]}};
+
+const DATA=[{t:L('Favorite Fruit','Fruta favorita'),c:[L('Apple','Manzana'),L('Banana','Plátano'),L('Grape','Uva'),L('Mango','Mango')]},{t:L('Books Read','Libros leídos'),c:[L('Ana','Ana'),L('Ben','Ben'),L('Cruz','Cruz'),L('Dee','Dee')]},
+ {t:L('Pets in Our Class','Mascotas de la clase'),c:[L('Dog','Perro'),L('Cat','Gato'),L('Fish','Pez'),L('Bird','Ave')]},{t:L('Field Day Votes','Votos del día de campo'),c:[L('Tag','Tag'),L('Relay','Relevos'),L('Sack','Costales'),L('Rope','Cuerda')]}];
+G['3.8A']=()=>{const D=pick(DATA),pic=Math.random()<.4,sc=pic?pick([2,5]):pick([2,5,10]);let vals;do vals=D.c.map(()=>ri(1,pic?6:8)*sc);while(new Set(vals).size<3);let i,j;do{i=ri(0,3);j=ri(0,3)}while(i===j||vals[i]===vals[j]);if(vals[i]<vals[j])[i,j]=[j,i];
+  const ask=pick(['more','total','one']);const disp=pic?()=>pictoHTML(D.c.map(tx),vals,sc,tx(D.t),tx(L(`${sc} votes`,`${sc} votos`))):()=>barGraph(D.c.map(tx),vals,sc,tx(D.t));
+  const ci=D.c[i],cj=D.c[j];let ans,t,g,st;
+  const readI=N1(pic?L(`Each ★ = ${sc}. How many does ${ci.en} have?`,`Cada ★ = ${sc}. ¿Cuántos tiene ${ci.es}?`):L(`Read the bar for ${ci.en}. What number is it?`,`Lee la barra de ${ci.es}. ¿Qué número es?`),vals[i],pic?L(`Count the stars and multiply by ${sc}.`,`Cuenta las estrellas y multiplica por ${sc}.`):L(`The scale counts by ${sc}s.`,`La escala va de ${sc} en ${sc}.`));
+  if(ask==='more'){ans=vals[i]-vals[j];t=L(`How many more for ${ci.en} than for ${cj.en}?`,`¿Cuántos más tiene ${ci.es} que ${cj.es}?`);
+    g=[readI,N1(L(`How many for ${cj.en}?`,`¿Cuántos tiene ${cj.es}?`),vals[j],pic?L(`Stars × ${sc}`,`Estrellas × ${sc}`):L('Follow the top of the bar to the scale.','Sigue la punta de la barra hasta la escala.')),N1(L(`${vals[i]} − ${vals[j]} = ?`,`${vals[i]} − ${vals[j]} = ?`),ans,L('"How many more" means subtract.','"Cuántos más" significa restar.'))];st=[{m:`${vals[i]} − ${vals[j]} = ${ans}`}]}
+  else if(ask==='total'){ans=vals.reduce((a,b)=>a+b,0);t=L('What is the total for all four categories?','¿Cuál es el total de las cuatro categorías?');
+    g=[readI,N1(L(`The four values are ${vals.join(', ')}. What is the total?`,`Los cuatro valores son ${vals.join(', ')}. ¿Cuál es el total?`),ans,L('Add them two at a time.','Súmalos de dos en dos.'))];st=[{m:`${vals.join(' + ')} = ${ans}`}]}
+  else{ans=vals[i];t=L(`How many for ${ci.en}?`,`¿Cuántos tiene ${ci.es}?`);g=[N1(pic?L(`How many ★ are in the row for ${ci.en}?`,`¿Cuántas ★ hay en la fila de ${ci.es}?`):L('What does each line on the scale count by?','¿De cuánto en cuánto cuenta cada línea de la escala?'),pic?vals[i]/sc:sc,pic?L('Count the stars.','Cuenta las estrellas.'):L('Look at the numbers on the side.','Mira los números del lado.')),readI];
+    st=[pic?{m:`${vals[i]/sc} × ${sc} = ${ans}`}:L(`The bar ends at ${ans}.`,`La barra termina en ${ans}.`)]}
+  return{type:'num',text:J(pic?L('The pictograph shows votes. ','La pictografía muestra votos. '):L('The bar graph shows data. ','La gráfica de barras muestra datos. '),t),disp,ans,ansText:String(ans),
+    hint:pic?L(`Check the key: each ★ stands for ${sc}.`,`Revisa la clave: cada ★ representa ${sc}.`):L(`The scale counts by ${sc}s. Read each bar carefully.`,`La escala va de ${sc} en ${sc}. Lee cada barra con cuidado.`),g,steps:st}};
+
+/* ---------- curriculum ---------- */
+const CATS=[
+ {id:'mult',items:'9–11',n:L('Multiplication & division','Multiplicación y división'),sk:['3.4K','3.5B']},
+ {id:'add',items:'4–5',n:L('Addition & subtraction','Suma y resta'),sk:['3.4A','3.5A','3.5E']},
+ {id:'meas',items:'4–5',n:L('Measurement','Medición'),sk:['3.6C','3.7B']},
+ {id:'frac',items:'3–6',n:L('Fractions','Fracciones'),sk:['3.3F','3.3H']},
+ {id:'whole',items:'3–4',n:L('Whole numbers & place value','Números enteros y valor posicional'),sk:['3.2A','3.2D']},
+ {id:'geo',items:'2–3',n:L('Geometry','Geometría'),sk:['3.6A']},
+ {id:'data',items:'2–3',n:L('Data analysis','Análisis de datos'),sk:['3.8A']}];
+const NAMES={'3.4K':L('Multiply & divide word problems','Problemas de multiplicar y dividir'),'3.5B':L('Arrays, strip diagrams & equations','Arreglos, diagramas de tiras y ecuaciones'),
+ '3.4A':L('Add & subtract within 1,000','Sumar y restar hasta 1,000'),'3.5A':L('Write add & subtract equations','Escribir ecuaciones de suma y resta'),'3.5E':L('Number patterns in tables','Patrones numéricos en tablas'),
+ '3.6C':L('Area of rectangles','Área de rectángulos'),'3.7B':L('Perimeter & missing sides','Perímetro y lados que faltan'),'3.3F':L('Equivalent fractions','Fracciones equivalentes'),
+ '3.3H':L('Compare fractions','Comparar fracciones'),'3.2A':L('Expanded form & place value','Forma desarrollada y valor posicional'),'3.2D':L('Compare & order numbers','Comparar y ordenar números'),
+ '3.6A':L('2-D & 3-D figures','Figuras 2D y 3D'),'3.8A':L('Bar graphs & pictographs','Gráficas de barras y pictografías')};
+const ORDER=CATS.flatMap(c=>c.sk);const catOf=id=>CATS.find(c=>c.sk.includes(id));
+
+const U={sub:L('STAAR readiness standards · learn, practice together, then on your own','Estándares de preparación STAAR · aprende, practica con ayuda y luego por tu cuenta'),
+ check:L('Quick check','Diagnóstico rápido'),reset:L('Reset progress','Borrar progreso'),resetSure:L('Tap again to erase','Toca otra vez para borrar'),
+ map:L('Skill map','Mapa de habilidades'),mapNote:L('Ordered by how many of the 30 STAAR questions each category usually gets. Readiness Standards are 18–20 of them.','Ordenado según cuántas de las 30 preguntas de STAAR suele tener cada categoría. De ellas, 18 a 20 son de estándares de preparación.'),
+ items:L('items','preguntas'),new:L('Not started','Sin empezar'),working:L('Practicing','Practicando'),gap:L('Gap','Brecha'),ok:L('Looks solid','Se ve bien'),mastered:L('Mastered','Dominado'),
+ nextUp:L('Next up','Siguiente'),submit:L('Check answer','Revisar respuesta'),hint:L('Show hint','Ver pista'),next:L('Next question','Siguiente pregunta'),
+ correct:L('Correct.','¡Correcto!'),wrong:L('Not yet. The answer is','Todavía no. La respuesta es'),steps:L('Worked solution','Solución paso a paso'),
+ streak:L('in a row · 3 = mastered','seguidas · 3 = dominado'),numHelp:L('Type a whole number, like 245.','Escribe un número entero, como 245.'),
+ bad:L('Enter a number, for example 36 or 1,250.','Escribe un número, por ejemplo 36 o 1,250.'),
+ welT:L('Find the gaps first','Primero encuentra las brechas'),welB:L('The quick check asks one question per readiness standard (13 total) and builds a practice order from the results.','El diagnóstico rápido hace una pregunta por cada estándar de preparación (13 en total) y arma un orden de práctica con los resultados.'),
+ start:L('Start quick check','Empezar diagnóstico'),qOf:(i,n)=>L(`Quick check · ${i} of ${n}`,`Diagnóstico · ${i} de ${n}`),exit:L('Exit','Salir'),
+ sumT:L('Quick check results','Resultados del diagnóstico'),sumB:(ok,n)=>L(`${ok} of ${n} correct. Practice the gaps in this order, starting with the categories that carry the most STAAR questions.`,`${ok} de ${n} correctas. Practica las brechas en este orden, empezando por las categorías con más preguntas de STAAR.`),
+ noGaps:L('No gaps found. Keep practicing each skill until it reaches mastery.','No se encontraron brechas. Sigue practicando cada habilidad hasta dominarla.'),
+ practice:L('Start practicing','Empezar a practicar'),masteredNow:L('Mastered: three correct in a row.','Dominado: tres correctas seguidas.'),goNext:L('Go to next skill','Ir a la siguiente habilidad'),
+ foot:L('Standards and STAAR item ranges from the lead4ward Grade 3 Math Snapshot (TEA source). Progress is saved in this browser only.','Estándares y rangos de preguntas STAAR tomados del Snapshot de Matemáticas de 3.er grado de lead4ward (fuente: TEA). El progreso se guarda solo en este navegador.')};
+
+/* ---------- lessons: plain-language explanation, bilingual vocabulary, common mistake ---------- */
+const M=(en,es)=>({m:es?{en,es}:en});
+const LES={
+'3.4K':{idea:[L('Multiplication puts equal groups together. Division splits a total into equal groups.','La multiplicación junta grupos iguales. La división separa un total en grupos iguales.'),
+  M('4 bags × 6 apples = 24 apples\n24 apples ÷ 4 bags = 6 apples in each bag','4 bolsas × 6 manzanas = 24 manzanas\n24 manzanas ÷ 4 bolsas = 6 manzanas en cada bolsa'),
+  L('Key words help: "each," "every," and "in all" often mean multiply. "Shared equally" and "split into" often mean divide.','Las palabras clave ayudan: "cada" y "en total" muchas veces significan multiplicar. "Repartir en partes iguales" y "separar en" muchas veces significan dividir.'),
+  L('Two-step problems need two operations. Solve the first step, then use that answer in the second step.','Los problemas de dos pasos necesitan dos operaciones. Resuelve el primer paso y usa esa respuesta en el segundo.')],
+  vocab:[['multiply','multiplicar'],['divide','dividir'],['equal groups','grupos iguales'],['product','producto']],
+  watch:L('Use multiplication facts to check division: if 24 ÷ 4 = 6, then 4 × 6 must equal 24.','Usa las tablas para comprobar la división: si 24 ÷ 4 = 6, entonces 4 × 6 debe ser 24.')},
+'3.5B':{idea:[L('An array shows equal rows. The number of rows times the number in each row gives the total.','Un arreglo muestra filas iguales. El número de filas por la cantidad en cada fila da el total.'),
+  M('3 rows of 5 → 3 × 5 = 15','3 filas de 5 → 3 × 5 = 15'),
+  L('A strip diagram shows a total split into equal parts. To find one part, divide the total by the number of parts.','Un diagrama de tiras muestra un total dividido en partes iguales. Para hallar una parte, divide el total entre el número de partes.'),
+  M('[ ? | ? | ? | ? ] = 20  →  20 ÷ 4 = ?','[ ? | ? | ? | ? ] = 20  →  20 ÷ 4 = ?')],
+  vocab:[['array','arreglo'],['row','fila'],['strip diagram','diagrama de tiras'],['equation','ecuación']],
+  watch:L('Rows go across. Count the rows, then count how many are in ONE row.','Las filas van de lado a lado. Cuenta las filas y luego cuántos hay en UNA fila.')},
+'3.4A':{idea:[L('Add when amounts are put together or something grows. Subtract when something is taken away, or to find a difference.','Suma cuando se juntan cantidades o algo aumenta. Resta cuando se quita algo o para hallar una diferencia.'),
+  L('Line up the digits by place value: hundreds under hundreds, tens under tens, ones under ones.','Alinea los dígitos según su valor posicional: centenas con centenas, decenas con decenas, unidades con unidades.'),
+  M('  456\n+ 278\n  734   (6 + 8 = 14: write 4, regroup 1 ten)','  456\n+ 278\n  734   (6 + 8 = 14: escribe 4 y reagrupa 1 decena)'),
+  L('Estimate first to check: 456 + 278 is about 460 + 280 = 740, so 734 makes sense.','Primero estima para comprobar: 456 + 278 es casi 460 + 280 = 740, así que 734 tiene sentido.')],
+  vocab:[['sum','suma'],['difference','diferencia'],['regroup','reagrupar'],['estimate','estimar']],
+  watch:L('When subtracting, if the top digit is smaller, regroup from the next place. Do not just subtract the smaller digit from the bigger one.','Al restar, si el dígito de arriba es más pequeño, reagrupa del lugar siguiente. No restes simplemente el dígito menor del mayor.')},
+'3.5A':{idea:[L('An equation can tell the story of a problem. Use a letter for the number you do not know yet.','Una ecuación puede contar la historia de un problema. Usa una letra para el número que todavía no conoces.'),
+  M('Had 300, gave away some, has 120 left:  300 − g = 120','Tenía 300, regaló algunas y le quedan 120:  300 − g = 120'),
+  L('Follow the order of the story: start, what changed, and the result.','Sigue el orden del problema: el inicio, lo que cambió y el resultado.'),
+  L('A number line can show the same story with jumps forward (add) or back (subtract).','Una recta numérica puede mostrar el mismo problema con saltos hacia adelante (sumar) o hacia atrás (restar).')],
+  vocab:[['equation','ecuación'],['unknown','número desconocido'],['number line','recta numérica'],['total','total']],
+  watch:L('"Fewer" and "less" mean the second amount is smaller, so subtract from the bigger amount.','"Menos" significa que la segunda cantidad es más pequeña, así que resta de la cantidad mayor.')},
+'3.5E':{idea:[L('A table can show pairs of numbers that follow a rule.','Una tabla puede mostrar pares de números que siguen una regla.'),
+  M('Spiders  1   2   3   4\nLegs     8  16  24  32    Rule: × 8','Arañas  1   2   3   4\nPatas   8  16  24  32    Regla: × 8'),
+  L('To find the rule, ask: what do I do to the top number to get the bottom number? Check that the rule works for every pair.','Para hallar la regla, pregúntate: ¿qué le hago al número de arriba para obtener el de abajo? Revisa que la regla funcione con todos los pares.')],
+  vocab:[['pattern','patrón'],['rule','regla'],['table','tabla'],['relationship','relación']],
+  watch:L('A rule that works for only one pair is not the rule. Test it on all the columns.','Una regla que funciona solo con un par no es la regla. Pruébala con todas las columnas.')},
+'3.6C':{idea:[L('Area is how many square units cover a flat shape.','El área es cuántas unidades cuadradas cubren una figura plana.'),
+  L('A rectangle is made of rows of squares. Multiply the number of rows by the number of squares in each row.','Un rectángulo está formado por filas de cuadritos. Multiplica el número de filas por los cuadritos en cada fila.'),
+  M('Area = length × width\n4 rows of 6 squares → 4 × 6 = 24 square units','Área = largo × ancho\n4 filas de 6 cuadritos → 4 × 6 = 24 unidades cuadradas')],
+  vocab:[['area','área'],['square unit','unidad cuadrada'],['length','largo'],['width','ancho']],
+  watch:L('Area multiplies. Perimeter adds. Do not add the sides when the question asks for area.','El área se multiplica. El perímetro se suma. No sumes los lados cuando la pregunta pide el área.')},
+'3.7B':{idea:[L('Perimeter is the distance all the way around a shape. Add the lengths of all the sides.','El perímetro es la distancia alrededor de toda la figura. Suma las medidas de todos los lados.'),
+  M('5 + 3 + 5 + 3 = 16 units','5 + 3 + 5 + 3 = 16 unidades'),
+  L('If one side is missing and you know the perimeter, add the sides you know and subtract from the perimeter.','Si falta un lado y conoces el perímetro, suma los lados que conoces y réstalos del perímetro.'),
+  L('In a rectangle, opposite sides are the same length.','En un rectángulo, los lados opuestos miden lo mismo.')],
+  vocab:[['perimeter','perímetro'],['side','lado'],['polygon','polígono'],['length','longitud']],
+  watch:L('Count every side. A rectangle has 4 sides even if only 2 are labeled.','Cuenta todos los lados. Un rectángulo tiene 4 lados aunque solo 2 tengan medida.')},
+'3.3F':{idea:[L('Equivalent fractions name the same amount, even though they use different numbers.','Las fracciones equivalentes nombran la misma cantidad, aunque usen números diferentes.'),
+  M('1/2 = 2/4 = 3/6 = 4/8','1/2 = 2/4 = 3/6 = 4/8'),
+  L('On fraction bars of the same size, equivalent fractions cover the same length. On a number line, they land on the same point.','En barras de fracciones del mismo tamaño, las fracciones equivalentes cubren el mismo largo. En la recta numérica, caen en el mismo punto.')],
+  vocab:[['equivalent','equivalente'],['numerator','numerador'],['denominator','denominador'],['number line','recta numérica']],
+  watch:L('Count the spaces between marks on a number line, not the marks themselves.','En la recta numérica cuenta los espacios entre las marcas, no las marcas.')},
+'3.3H':{idea:[L('You can compare two fractions when they have the same numerator or the same denominator, as long as the wholes are the same size.','Puedes comparar dos fracciones cuando tienen el mismo numerador o el mismo denominador, siempre que los enteros sean del mismo tamaño.'),
+  M('Same denominator: 5/8 > 3/8  (more pieces of the same size)\nSame numerator:   2/3 > 2/6  (same number of bigger pieces)','Mismo denominador: 5/8 > 3/8  (más pedazos del mismo tamaño)\nMismo numerador:   2/3 > 2/6  (la misma cantidad de pedazos más grandes)'),
+  L('The more parts a whole is cut into, the smaller each part is.','Mientras más partes tenga un entero, más pequeña es cada parte.')],
+  vocab:[['compare','comparar'],['greater than','mayor que'],['less than','menor que'],['whole','entero']],
+  watch:L('1/8 is NOT bigger than 1/4. A bigger denominator means smaller pieces.','1/8 NO es mayor que 1/4. Un denominador más grande significa pedazos más pequeños.')},
+'3.2A':{idea:[L('Each digit has a value that depends on its place.','Cada dígito tiene un valor que depende de su lugar.'),
+  M('45,308 = 40,000 + 5,000 + 300 + 8','45,308 = 40,000 + 5,000 + 300 + 8'),
+  L('A number can be built in more than one way. 12 thousands is the same as 1 ten thousand and 2 thousands.','Un número se puede formar de más de una manera. 12 unidades de millar es lo mismo que 1 decena de millar y 2 unidades de millar.'),
+  L('Expanded form shows the value of every digit added together. A zero digit is left out.','La forma desarrollada muestra el valor de cada dígito sumado. El dígito cero no se escribe.')],
+  vocab:[['place value','valor posicional'],['digit','dígito'],['expanded form','forma desarrollada'],['ten thousands','decenas de millar']],
+  watch:L('A 3 in the hundreds place is worth 300, not 3. Check the place before you write the value.','Un 3 en el lugar de las centenas vale 300, no 3. Revisa el lugar antes de escribir el valor.')},
+'3.2D':{idea:[L('To compare whole numbers, line them up by place value and compare from left to right.','Para comparar números enteros, alinéalos por valor posicional y compáralos de izquierda a derecha.'),
+  L('The first place where the digits are different tells which number is greater.','El primer lugar donde los dígitos son diferentes dice cuál número es mayor.'),
+  M('42,718  >  42,178   (hundreds: 7 > 1)\n>  greater than    <  less than    =  equal to','42,718  >  42,178   (centenas: 7 > 1)\n>  mayor que    <  menor que    =  igual a')],
+  vocab:[['greater than','mayor que'],['less than','menor que'],['least to greatest','de menor a mayor'],['order','ordenar']],
+  watch:L('The open side of > or < always faces the greater number.','La parte abierta de > o < siempre apunta al número mayor.')},
+'3.6A':{idea:[L('Solid (3-D) figures have faces (flat surfaces), edges (where faces meet), and vertices (corners).','Los cuerpos geométricos (3D) tienen caras (superficies planas), aristas (donde se juntan las caras) y vértices (esquinas).'),
+  M('cube: 6 faces, 12 edges, 8 vertices\ntriangular prism: 5 faces, 9 edges, 6 vertices\ncone: 1 flat face, 1 vertex   sphere: none','cubo: 6 caras, 12 aristas, 8 vértices\nprisma triangular: 5 caras, 9 aristas, 6 vértices\ncono: 1 cara plana, 1 vértice   esfera: ninguno'),
+  L('Flat (2-D) figures are named by their number of sides: triangle 3, quadrilateral 4, pentagon 5, hexagon 6, octagon 8.','Las figuras planas (2D) se nombran por su número de lados: triángulo 3, cuadrilátero 4, pentágono 5, hexágono 6, octágono 8.')],
+  vocab:[['face','cara'],['edge','arista'],['vertex','vértice'],['solid figure','cuerpo geométrico']],
+  watch:L('Count the hidden faces, edges and vertices too. Dashed lines show the parts you cannot see.','Cuenta también las caras, aristas y vértices ocultos. Las líneas punteadas muestran las partes que no se ven.')},
+'3.8A':{idea:[L('Bar graphs and pictographs summarize data so it is easy to compare.','Las gráficas de barras y las pictografías resumen datos para compararlos con facilidad.'),
+  L('On a bar graph, check the scale first. It may count by 2s, 5s or 10s.','En una gráfica de barras, revisa primero la escala. Puede contar de 2 en 2, de 5 en 5 o de 10 en 10.'),
+  M('Pictograph key: ★ = 5\n★★★ → 3 × 5 = 15','Clave de la pictografía: ★ = 5\n★★★ → 3 × 5 = 15'),
+  L('"How many more" and "how many fewer" mean subtract. "In all" or "total" means add.','"Cuántos más" y "cuántos menos" significan restar. "En total" significa sumar.')],
+  vocab:[['bar graph','gráfica de barras'],['pictograph','pictografía'],['scale','escala'],['key','clave']],
+  watch:L('Do not count the stars as 1 each. Multiply by the key.','No cuentes cada estrella como 1. Multiplica por la clave.')}};
+
+Object.assign(U,{learn:L('Learn','Aprende'),guided:L('Guided practice','Práctica guiada'),own:L('On my own','Por mi cuenta'),
+ words:L('Key words','Palabras clave'),watch:L('Watch out','Cuidado'),example:L('Worked example','Ejemplo resuelto'),
+ showStep:L('Show next step','Ver siguiente paso'),answerIs:L('Answer:','Respuesta:'),tryTogether:L('Try one together','Hagamos uno juntos'),another:L('Another example','Otro ejemplo'),
+ stepOf:(i,n)=>L(`Step ${i} of ${n}`,`Paso ${i} de ${n}`),check1:L('Check step','Revisar paso'),stepHint:L('Hint:','Pista:'),
+ shown:L('Here is this step. Read it, then continue.','Aquí está este paso. Léelo y luego continúa.'),cont:L('Continue','Continuar'),
+ solved:L('Solved together!','¡Lo resolvimos juntos!'),solvedB:(n,h)=>L(`${n} steps, ${h} with help.`,`${n} pasos, ${h} con ayuda.`),
+ readyOwn:L('Nice work with no help. You are ready to try one on your own.','Buen trabajo sin ayuda. Ya puedes intentar uno por tu cuenta.'),
+ oneMore:L('Try one more guided problem before working on your own.','Haz otro problema guiado antes de trabajar por tu cuenta.'),
+ anotherG:L('Another guided problem','Otro problema guiado'),goOwn:L('Try one on my own','Intentar uno por mi cuenta'),
+ walk:L('Walk me through a similar one','Guíame con uno parecido'),review:L('Review the lesson','Repasar la lección'),
+ stage:L('How to study each skill: read the lesson, solve one or two together, then practice on your own.','Cómo estudiar cada habilidad: lee la lección, resuelve uno o dos juntos y luego practica por tu cuenta.')});
+
+/* ---------- state ---------- */
+const prog=id=>S.p[id]||(S.p[id]={a:0,c:0,s:0,m:false,chk:null});
+function status(id){const p=S.p[id];if(!p)return'new';if(p.m)return'mastered';if(p.chk===false||(p.a>=3&&p.c/p.a<.6))return'gap';if(p.a>0)return'working';if(p.chk===true)return'ok';return'new'}
+function nextUp(exclude){for(const want of['gap','working','new','ok'])for(const id of ORDER)if(id!==exclude&&status(id)===want)return id;return null}
+let mode={t:'study'};let cur=null;let resetArm=null;
+function setView(view){cur.view=view;cur.err=false;
+  if(view==='learn'){cur.ex=G[cur.id]();cur.exStep=1}
+  else if(view==='guided'){cur.gq=G[cur.id]();cur.gi=0;cur.gt=0;cur.gshow=false;cur.gval='';cur.gpick=null;cur.glog=[]}
+  else{cur.q=G[cur.id]();cur.done=false;cur.pick=null;cur.hint=false;cur.res=null;cur.val='';cur.justMastered=false}}
+function openSkill(id,view){cur={id};if(!view){const st=status(id);view=(st==='new'||st==='gap')?'learn':'practice'}setView(view)}
+
+/* ---------- render ---------- */
+const $=s=>document.querySelector(s);
+function renderChrome(){document.documentElement.lang=S.lang;$('#home-txt').textContent=S.lang==='es'?'Todos los grados':'All grades';$('#ttl-lv').textContent=S.lang==='es'?TTL_ES:TTL_EN;$('#sub').textContent=tx(U.sub);
+  $('#lang-en').setAttribute('aria-pressed',S.lang==='en');$('#lang-es').setAttribute('aria-pressed',S.lang==='es');
+  $('#btn-check').textContent=tx(U.check);$('#btn-reset').textContent=tx(resetArm?U.resetSure:U.reset);$('#btn-reset').classList.toggle('warn',!!resetArm);
+  $('#foot').textContent=tx(U.foot)}
+function renderMap(){const nu=nextUp();let h=`<h2>${tx(U.map)}</h2><p class="note">${tx(U.mapNote)}</p>`;
+  for(const c of CATS){h+=`<div class="cat"><div class="cat-h"><span>${tx(c.n)}</span><b>${c.items} ${tx(U.items)}</b></div>`;
+    for(const id of c.sk){const st=status(id),p=S.p[id],on=cur&&cur.id===id&&mode.t==='study';
+      h+=`<button class="sk" data-skill="${id}" aria-current="${on}"><span class="code">${id}</span><span class="nm">${tx(NAMES[id])}${id===nu&&!on?`<span class="nx">${tx(U.nextUp)}</span>`:''}</span><span class="pill st-${st}" title="${p&&p.a?p.c+'/'+p.a:''}">${tx(U[st])}</span></button>`}
+    h+='</div>'}
+  $('#map').innerHTML=h}
+const lineHTML=s=>s&&s.m?`<span class="m">${esc(s.m)}</span>`:esc(tx(s));
+function stepsHTML(st,n){return`<ol class="steps">${st.slice(0,n??st.length).map(s=>`<li${s&&s.m?' class="m"':''}>${lineHTML(s)}</li>`).join('')}</ol>`}
+function probHTML(q){return`<p class="qtext">${esc(tx(q.text))}</p>`+(q.disp?`<div class="vis">${q.disp()}</div>`:'')}
+function choicesHTML(list,attr,sel,done,ans,mono){return`<div class="choices">${list.map((ch,i)=>{let cl='choice'+(mono?'':' txt');
+  if(done){if(i===ans)cl+=' right';else if(i===sel)cl+=' wrongpick'}else if(i===sel)cl+=' sel';
+  return`<button class="${cl}" ${attr}="${i}" ${done?'disabled':''}>${esc(tx(ch))}</button>`}).join('')}</div>`}
+function tabsHTML(){return`<nav class="tabs" aria-label="stages">${[['learn',U.learn],['guided',U.guided],['practice',U.own]].map(([v,l],i)=>`<button data-view="${v}" aria-current="${cur.view===v}"><span class="tn">${i+1}</span>${tx(l)}</button>`).join('')}</nav>`}
+
+function learnHTML(){const les=LES[cur.id],q=cur.ex,n=q.steps.length,all=cur.exStep>=n;
+  let h=`<div class="lesson"><div class="idea">${les.idea.map(x=>x.m?`<div class="formula">${esc(tx(x.m))}</div>`:`<p>${esc(tx(x))}</p>`).join('')}</div>
+    <div class="side"><div class="words"><h4>${tx(U.words)}</h4><dl>${les.vocab.map(([e,s])=>`<div><dt>${esc(S.lang==='en'?e:s)}</dt><dd>${esc(S.lang==='en'?s:e)}</dd></div>`).join('')}</dl></div>
+    <div class="watch"><h4>${tx(U.watch)}</h4><p>${esc(tx(les.watch))}</p></div></div></div>`;
+  h+=`<div class="example"><h3>${tx(U.example)}</h3>${probHTML(q)}${stepsHTML(q.steps,cur.exStep)}`;
+  if(all)h+=`<p class="exans"><b>${tx(U.answerIs)}</b> <span class="m">${esc(q.type==='mc'?tx(q.choices[q.ans]):tx(q.ansText))}</span></p>`;
+  h+=`<div class="actions">${all?`<button class="btn primary" data-act="to-guided">${tx(U.tryTogether)} →</button><button class="btn" data-act="new-example">${tx(U.another)}</button>`:`<button class="btn primary" data-act="ex-step">${tx(U.showStep)}</button>`}</div></div>`;
+  return h}
+
+function guidedHTML(){const q=cur.gq,g=q.g,n=g.length;let h=probHTML(q)+`<ol class="gsteps">`;
+  for(let i=0;i<n&&i<=cur.gi;i++){const s=g[i];
+    if(i<cur.gi){const lg=cur.glog[i];h+=`<li class="gs done"><span class="gn ${lg?'help':'ok'}">${lg?'•':'✓'}</span><div><p>${esc(tx(s.p))}</p><p class="ga m">${esc(tx(s.at))}</p></div></li>`}
+    else{h+=`<li class="gs now"><span class="gn">${i+1}</span><div class="gbody"><p class="eyebrow">${tx(U.stepOf(i+1,n))}</p><p class="gp">${esc(tx(s.p))}</p>`;
+      if(s.type==='mc')h+=choicesHTML(s.choices,'data-gchoice',cur.gpick,cur.gshow,s.ans,s.mono);
+      else h+=`<div class="answer"><input id="gans" inputmode="decimal" autocomplete="off" aria-label="answer" ${cur.gshow?'disabled':''} value="${esc(cur.gshow?tx(s.at):cur.gval||'')}"></div>`;
+      if(cur.err)h+=`<div class="hintbox">${tx(U.bad)}</div>`;
+      if(cur.gt>0&&!cur.gshow)h+=`<div class="hintbox"><b>${tx(U.stepHint)}</b> ${esc(tx(s.h))}</div>`;
+      if(cur.gshow)h+=`<div class="hintbox"><b>${tx(U.answerIs)}</b> <span class="m">${esc(tx(s.at))}</span>. ${tx(U.shown)}</div>`;
+      h+=`<div class="actions">${cur.gshow?`<button class="btn primary" data-act="g-cont">${tx(U.cont)}</button>`:`<button class="btn primary" data-act="g-check" ${s.type==='mc'&&cur.gpick==null?'disabled':''}>${tx(U.check1)}</button>`}</div></div></li>`}}
+  h+='</ol>';
+  if(cur.gi>=n){const helped=cur.glog.filter(Boolean).length;h+=`<div class="fb ok" aria-live="polite"><strong>${tx(U.solved)}</strong><div>${tx(U.solvedB(n,helped))} ${tx(helped===0?U.readyOwn:U.oneMore)}</div></div>
+    <div class="actions">${helped===0?`<button class="btn primary" data-act="to-own">${tx(U.goOwn)} →</button><button class="btn" data-act="to-guided">${tx(U.anotherG)}</button>`:`<button class="btn primary" data-act="to-guided">${tx(U.anotherG)}</button><button class="btn" data-act="to-own">${tx(U.goOwn)}</button>`}</div>`}
+  return h}
+
+function practiceHTML(){const q=cur.q;let h=probHTML(q);
+  if(q.type==='mc')h+=choicesHTML(q.choices,'data-choice',cur.pick,cur.done,q.ans,q.mono);
+  else h+=`<div class="answer"><input id="ans" inputmode="decimal" autocomplete="off" aria-label="answer" ${cur.done?'disabled':''} value="${esc(cur.val||'')}"></div><p class="help">${tx(U.numHelp)}</p>`;
+  if(cur.err)h+=`<div class="hintbox">${tx(U.bad)}</div>`;
+  if(cur.hint&&!cur.done)h+=`<div class="hintbox">${esc(tx(q.hint))}</div>`;
+  if(cur.done){const ok=cur.res;h+=`<div class="fb ${ok?'ok':'no'}" aria-live="polite"><strong>${ok?tx(U.correct):tx(U.wrong)+' '}${ok?'':`<span class="ansv">${esc(tx(q.ansText))}</span>`}</strong>`;
+    if(cur.justMastered)h+=`<div>${tx(U.masteredNow)}</div>`;
+    h+=ok?`<details><summary>${tx(U.steps)}</summary>${stepsHTML(q.steps)}</details>`:`<div><b>${tx(U.steps)}</b>${stepsHTML(q.steps)}</div>`;h+='</div>'}
+  h+=`<div class="actions">`;
+  if(!cur.done){h+=`<button class="btn primary" data-act="submit" ${q.type==='mc'&&cur.pick==null?'disabled':''}>${tx(U.submit)}</button>`;if(mode.t==='study'&&!cur.hint)h+=`<button class="btn" data-act="hint">${tx(U.hint)}</button>`}
+  else{h+=`<button class="btn primary" data-act="next">${tx(U.next)}</button>`;
+    if(mode.t==='study'&&!cur.res)h+=`<button class="btn" data-act="to-guided">${tx(U.walk)}</button><button class="btn ghost" data-act="to-learn">${tx(U.review)}</button>`;
+    if(mode.t==='study'&&cur.justMastered&&nextUp(cur.id))h+=`<button class="btn" data-act="go-next">${tx(U.goNext)} · ${tx(NAMES[nextUp(cur.id)])}</button>`}
+  return h+'</div>'}
+
+function renderMain(){const m=$('#main');let h='';
+  if(mode.t==='summary'){const res=mode.results;const n=Object.keys(res).length,ok=Object.values(res).filter(Boolean).length;const gaps=ORDER.filter(id=>res[id]===false);
+    h=`<section class="sum"><h3>${tx(U.sumT)}</h3><p>${tx(U.sumB(ok,n))}</p>`+(gaps.length?`<ol class="gaplist">${gaps.map(id=>`<li><span class="code">${id}</span><span>${tx(NAMES[id])}</span><span class="w">${catOf(id).items} ${tx(U.items)}</span></li>`).join('')}</ol>`:`<p>${tx(U.noGaps)}</p>`)+
+      `<p class="help">${tx(U.stage)}</p><div class="actions"><button class="btn primary" data-act="practice-first">${tx(U.practice)}</button></div></section>`;m.innerHTML=h;return}
+  const anyWork=Object.values(S.p).some(p=>p.a>0||p.chk!==null);
+  if(mode.t==='study'&&!anyWork)h+=`<div class="banner"><div><h3>${tx(U.welT)}</h3><p>${tx(U.welB)}</p></div><button class="btn primary" data-act="start-check">${tx(U.start)}</button></div>`;
+  const p=prog(cur.id),c=catOf(cur.id);
+  const top=mode.t==='check'?`<span class="eyebrow">${tx(U.qOf(mode.i+1,mode.queue.length))}</span><button class="btn ghost" data-act="exit-check">${tx(U.exit)}</button>`
+    :`<div class="ttl"><span class="eyebrow"><span class="code">${cur.id}</span>${tx(c.n)}</span><h2>${tx(NAMES[cur.id])}</h2></div>`+(cur.view==='practice'?`<span class="pips" aria-label="${Math.min(p.s,3)} ${tx(U.streak)}">${[0,1,2].map(i=>`<span class="pip ${i<Math.min(p.s,3)?'on':''}"></span>`).join('')} ${tx(U.streak)}</span>`:'');
+  h+=`<section class="card"><div class="card-top">${top}</div>${mode.t==='study'?tabsHTML():''}<div class="paper">${cur.view==='learn'?learnHTML():cur.view==='guided'?guidedHTML():practiceHTML()}</div></section>`;
+  m.innerHTML=h;
+  const inp=$('#ans');if(inp&&!cur.done){inp.addEventListener('input',e=>{cur.val=e.target.value});inp.addEventListener('keydown',e=>{if(e.key==='Enter')submit()})}
+  const gin=$('#gans');if(gin&&!cur.gshow){gin.addEventListener('input',e=>{cur.gval=e.target.value});gin.addEventListener('keydown',e=>{if(e.key==='Enter')gCheck()})}}
+function render(){renderChrome();renderMap();renderMain()}
+const focusSoon=sel=>{const el=document.querySelector(sel);if(el)el.focus({preventScroll:true})};
+
+/* ---------- actions ---------- */
+function submit(){const q=cur.q;let ok;
+  if(q.type==='mc'){if(cur.pick==null)return;ok=cur.pick===q.ans}
+  else{const v=parseNum(cur.val||'');if(isNaN(v)){cur.err=true;renderMain();return}ok=Math.abs(v-q.ans)<=(q.tol??.001)}
+  cur.err=false;cur.done=true;cur.res=ok;const p=prog(cur.id);
+  if(mode.t==='check'){p.chk=ok;mode.results[cur.id]=ok}
+  else{p.a++;if(ok){p.c++;p.s++;if(p.s>=3&&!p.m){p.m=true;cur.justMastered=true}}else p.s=0}
+  save();render();focusSoon('[data-act="next"]')}
+function gCheck(){const s=cur.gq.g[cur.gi];let ok;
+  if(s.type==='mc'){if(cur.gpick==null)return;ok=cur.gpick===s.ans}
+  else{const v=parseNum(cur.gval||'');if(isNaN(v)){cur.err=true;renderMain();return}ok=Math.abs(v-s.ans)<=s.tol}
+  cur.err=false;
+  if(ok){cur.glog.push(cur.gt>0);gAdvance()}
+  else{cur.gt++;cur.gpick=null;if(cur.gt>=2)cur.gshow=true;renderMain();focusSoon(cur.gshow?'[data-act="g-cont"]':'#gans')}}
+function gAdvance(){cur.gi++;cur.gt=0;cur.gshow=false;cur.gval='';cur.gpick=null;renderMain();focusSoon('#gans')}
+function goStudy(id,view){mode={t:'study'};openSkill(id,view);render();window.scrollTo({top:0,behavior:'smooth'})}
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.lang){S.lang=t.dataset.lang;save();try{localStorage.setItem('catchup.lang',S.lang)}catch(e){}render();return}
+  if(t.id==='btn-reset'){if(resetArm){clearTimeout(resetArm);resetArm=null;S.p={};save();goStudy(nextUp())}else{resetArm=setTimeout(()=>{resetArm=null;renderChrome()},4000);renderChrome()}return}
+  if(t.id==='btn-check'||t.dataset.act==='start-check'){mode={t:'check',queue:ORDER.slice(),i:0,results:{}};cur={id:ORDER[0]};setView('practice');render();return}
+  if(t.dataset.skill){goStudy(t.dataset.skill);return}
+  if(t.dataset.view){setView(t.dataset.view);render();return}
+  if(t.dataset.choice!=null){cur.pick=+t.dataset.choice;renderMain();return}
+  if(t.dataset.gchoice!=null){cur.gpick=+t.dataset.gchoice;renderMain();return}
+  const a=t.dataset.act;
+  if(a==='submit')submit();
+  else if(a==='hint'){cur.hint=true;renderMain()}
+  else if(a==='ex-step'){cur.exStep++;renderMain()}
+  else if(a==='new-example'){setView('learn');renderMain()}
+  else if(a==='to-guided'){setView('guided');render();focusSoon('#gans')}
+  else if(a==='to-own'){setView('practice');render();focusSoon('#ans')}
+  else if(a==='to-learn'){setView('learn');render()}
+  else if(a==='g-check')gCheck();
+  else if(a==='g-cont'){cur.glog.push(true);gAdvance()}
+  else if(a==='next'){if(mode.t==='check'){mode.i++;if(mode.i>=mode.queue.length){mode={t:'summary',results:mode.results};renderMain();renderMap()}else{cur={id:mode.queue[mode.i]};setView('practice');render()}}else{setView('practice');render();focusSoon('#ans')}}
+  else if(a==='go-next')goStudy(nextUp(cur.id));
+  else if(a==='exit-check'||a==='practice-first')goStudy(nextUp()||ORDER[0]);
+});
+goStudy(nextUp()||ORDER[0]);
+</script>
+</body>
+</html>
